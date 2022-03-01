@@ -55,7 +55,6 @@ int main(int argc, char** argv) {
         top = (Vec2i){size.x / 2 - resolution.x / 2, size.y / 2 - (2 * resolution.y + gap) / 2};
         bottom = (Vec2i){size.x / 2 - resolution.x / 2, size.y / 2 + gap / 2};
 
-        updateLevelSettings(settings.context, clock.delta);
         stateHandlerUpdate(clock.delta);
         handleButtons();
 

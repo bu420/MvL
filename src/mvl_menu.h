@@ -18,6 +18,7 @@ typedef struct {
 } LevelIcon;
 
 typedef struct {
+    int selected;
     SDL_Rect okDst;
     SDL_Rect backArrowDst;
 } LevelSettings;
