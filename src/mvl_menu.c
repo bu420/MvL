@@ -39,14 +39,14 @@ void onSelectBackArrowClick(void* context) {
 }
 
 void onLevelIconClick(void* context) {
-    printf("Level icon clicked!\n");
+    
 }
 
 void initLevelSettings(void* context) {
     LevelSettings* settings = context;
 
     settings->selected = 0;
-    settings->okDst = (SDL_Rect){100, 156, 48, 24};
+    settings->okDst = (SDL_Rect){100, 156, 64, 24};
     settings->backArrowDst = (SDL_Rect){64, 64, 30, 30};
 }
 
@@ -71,7 +71,6 @@ void updateLevelSettings(void* context, float delta) {
 void renderLevelSettings(void* context, float delta, SDL_Renderer* renderer, Assets assets) {
     LevelSettings* settings = context;
 
-    // Bottom background.
     for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 6; y++) {
             SDL_Rect dst = {bottom.x + x * 32, bottom.y + y * 32, 32, 32};
@@ -83,15 +82,13 @@ void renderLevelSettings(void* context, float delta, SDL_Renderer* renderer, Ass
     SDL_Color gray = {152, 152, 152};
 
     for (int i = 0; i < 4; i++) {
-        SDL_Color color = settings->selected == i ? green : gray;
-        SDL_Rect dst = {bottom.x, bottom.y + 4 + i * 36, resolution.x, 32};
-        SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, SDL_ALPHA_OPAQUE);
-        SDL_RenderFillRect(renderer, &dst);
+        SDL_Rect src = {0, settings->selected == i ? 0 : 32, 256, 32};
+        SDL_Rect dst = {bottom.x, bottom.y + 4 + i * 36, 256, 32};
+        SDL_RenderCopy(renderer, assets.settings.ptr, &src, &dst);
     }
 
-    SDL_SetRenderDrawColor(renderer, 0, 0, 255, SDL_ALPHA_OPAQUE);
-    SDL_Rect dst = {bottom.x + settings->okDst.x, bottom.y + settings->okDst.y, settings->okDst.w, settings->okDst.h};
-    SDL_RenderFillRect(renderer, &dst);
+    SDL_Rect dst = {bottom.x + settings->okDst.x, bottom.y + settings->okDst.y, 64, 24};
+    SDL_RenderCopy(renderer, assets.button.ptr, NULL, &dst);
 }
 
 void initLevelSelect(void* context) {

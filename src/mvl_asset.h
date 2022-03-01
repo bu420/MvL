@@ -19,8 +19,11 @@ typedef struct {
     Texture menuBg;
     Texture banner;
     Texture backArrow;
+    Texture settings;
+    Texture button;
     Texture arrows;
     Texture borders;
+    Texture boxes;
     Texture levelIcons;
 } Assets;
 

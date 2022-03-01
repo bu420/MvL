@@ -12,8 +12,11 @@ Assets loadAssets(SDL_Renderer* renderer) {
         .menuBg = loadTexture("asset/menu/menu_bg.png", renderer),
         .banner = loadTexture("asset/menu/banner.png", renderer),
         .backArrow = loadTexture("asset/menu/back_arrow.png", renderer),
+        .settings = loadTexture("asset/menu/settings.png", renderer),
+        .button = loadTexture("asset/menu/button.png", renderer),
         .arrows = loadTexture("asset/menu/arrows.png", renderer),
         .borders = loadTexture("asset/menu/borders.png", renderer),
+        .boxes = loadTexture("asset/menu/boxes.png", renderer),
         .levelIcons = loadTexture("asset/menu/level_icons.png", renderer)
     };
 
