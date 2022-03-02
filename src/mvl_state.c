@@ -3,6 +3,9 @@
 #include <assert.h>
 #include <stdio.h>
 
+#include "mvl_state_settings.h"
+#include "mvl_state_select.h"
+
 StateHandler stateHandler;
 
 State settings;
