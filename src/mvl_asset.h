@@ -17,6 +17,7 @@ typedef struct {
     Texture numbers;
     Texture text;
     Texture menuBg;
+    Texture menuDarkBg;
     Texture banner;
     Texture backArrow;
     Texture settings;

@@ -10,6 +10,7 @@ Assets loadAssets(SDL_Renderer* renderer) {
         .numbers = loadTexture("asset/menu/numbers.png", renderer),
         .text = loadTexture("asset/menu/text.png", renderer),
         .menuBg = loadTexture("asset/menu/menu_bg.png", renderer),
+        .menuDarkBg = loadTexture("asset/menu/menu_dark_bg.png", renderer),
         .banner = loadTexture("asset/menu/banner.png", renderer),
         .backArrow = loadTexture("asset/menu/back_arrow.png", renderer),
         .settings = loadTexture("asset/menu/settings.png", renderer),

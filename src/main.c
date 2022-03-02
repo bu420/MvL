@@ -36,8 +36,8 @@ int main(int argc, char** argv) {
     SDL_Window* window = SDL_CreateWindow("MvL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, resolution.x + 2 * gap, 2 * resolution.y + 3 * gap, SDL_WINDOW_RESIZABLE);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     Assets assets = loadAssets(renderer);
-    Clock clock = {0};
     SDL_SetWindowIcon(window, assets.icon);
+    timeInit();
     inputInit();
     stateHandlerInit();
     statesInit();
@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
     while (true) {
         // Update.
 
-        tick(&clock);
+        tick();
         handleEvents();
 
         Vec2i size;
