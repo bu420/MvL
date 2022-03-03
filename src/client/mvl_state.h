@@ -20,11 +20,12 @@ typedef struct {
     int top;
 } StateHandler;
 
-extern StateHandler stateHandler;
+extern StateHandler gStateHandler;
 
-extern State settings;
-extern State select;
-extern State game;
+extern State gConnectState;
+extern State gSettingsState;
+extern State gSelectState;
+extern State gGameState;
 
 void stateHandlerInit();
 void stateHandlerPush(State* state);

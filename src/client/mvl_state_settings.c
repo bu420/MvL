@@ -14,7 +14,7 @@ void initSettingsState(void* context) {
 
 void onSettingsOkClickDone(void* context) {
     stateHandlerPop();
-    stateHandlerPush(&select);
+    stateHandlerPush(&gSelectState);
 }
 
 void onSettingsOkClick(void* context) {
@@ -42,7 +42,7 @@ void renderSettingsState(void* context, float delta, SDL_Renderer* renderer, Ass
 
     for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 6; y++) {
-            SDL_Rect dst = {top.x + x * 32, top.y + y * 32, 32, 32};
+            SDL_Rect dst = {gTop.x + x * 32, gTop.y + y * 32, 32, 32};
 
             Texture bg = y == 0 || y == 5 ? assets.menuDarkBg : assets.menuBg;
             SDL_RenderCopy(renderer, bg.ptr, NULL, &dst);
@@ -51,7 +51,7 @@ void renderSettingsState(void* context, float delta, SDL_Renderer* renderer, Ass
 
     for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 6; y++) {
-            SDL_Rect dst = {bottom.x + x * 32, bottom.y + y * 32, 32, 32};
+            SDL_Rect dst = {gBottom.x + x * 32, gBottom.y + y * 32, 32, 32};
             SDL_RenderCopy(renderer, assets.menuBg.ptr, NULL, &dst);
         }
     }
@@ -61,11 +61,11 @@ void renderSettingsState(void* context, float delta, SDL_Renderer* renderer, Ass
 
     for (int i = 0; i < 4; i++) {
         SDL_Rect src = {0, settings->selected == i ? 0 : 32, 256, 32};
-        SDL_Rect dst = {bottom.x, bottom.y + 4 + i * 36, 256, 32};
+        SDL_Rect dst = {gBottom.x, gBottom.y + 4 + i * 36, 256, 32};
         SDL_RenderCopy(renderer, assets.settings.ptr, &src, &dst);
     }
 
-    SDL_Rect buttonDst = {bottom.x + settings->okDst.x, bottom.y + settings->okDst.y, 64, 28};
+    SDL_Rect buttonDst = {gBottom.x + settings->okDst.x, gBottom.y + settings->okDst.y, 64, 28};
     SDL_RenderCopy(renderer, assets.button.ptr, NULL, &buttonDst);
 
     SDL_Rect okTextSrc = {96, 0, 32, 16};

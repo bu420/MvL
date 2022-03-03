@@ -5,21 +5,21 @@
 
 #include "mvl_menu.h"
 
-#define keyboardKeyCount 322
-#define mouseButtonCount 16
+#define gKeyboardKeyCount 322
+#define gMouseButtonCount 16
 
 typedef struct {
-    bool keys[keyboardKeyCount];
-    bool pressedThisFrame[keyboardKeyCount];
+    bool keys[gKeyboardKeyCount];
+    bool pressedThisFrame[gKeyboardKeyCount];
 } Keyboard;
 
 typedef struct {
-    bool buttons[mouseButtonCount];
-    bool pressedThisFrame[mouseButtonCount];
+    bool buttons[gMouseButtonCount];
+    bool pressedThisFrame[gMouseButtonCount];
 } Mouse;
 
-extern Keyboard keyboard;
-extern Mouse mouse;
+extern Keyboard gKeyboard;
+extern Mouse gMouse;
 
 void inputInit();
 void inputUpdate(SDL_Event* mouseEvents, int count);

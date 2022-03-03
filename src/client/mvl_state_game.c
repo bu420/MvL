@@ -39,14 +39,14 @@ void renderGameState(void* context, float delta, SDL_Renderer* renderer, Assets 
     GameState game = *(GameState*)context;
     SDL_Rect mario = {roundf(game.mario.x), roundf(game.mario.y), game.mario.w, game.mario.h};
 
-    Vec2i camera = {resolution.x / 2 - mario.x - mario.w / 2, resolution.y / 2 - mario.y - mario.h / 2};
+    Vec2i camera = {gResolution.x / 2 - mario.x - mario.w / 2, gResolution.y / 2 - mario.y - mario.h / 2};
 
     for (int i = 0; i < 10; i++) {
-        SDL_Rect dst = {top.x + game.tiles[i].x + camera.x, top.y + game.tiles[i].y + camera.y, 16, 16};
+        SDL_Rect dst = {gTop.x + game.tiles[i].x + camera.x, gTop.y + game.tiles[i].y + camera.y, 16, 16};
         SDL_RenderCopy(renderer, assets.blueBricks.ptr, NULL, &dst);
     }
 
-    SDL_Rect marioDst = {top.x + mario.x + camera.x, top.y + mario.y + camera.y, mario.w, mario.h};
+    SDL_Rect marioDst = {gTop.x + mario.x + camera.x, gTop.y + mario.y + camera.y, mario.w, mario.h};
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, &marioDst);
 }

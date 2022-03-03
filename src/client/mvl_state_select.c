@@ -18,12 +18,12 @@ void initSelectState(void* context) {
 
 void onLevelIconClick(void* context) {
     stateHandlerPop();
-    stateHandlerPush(&game);
+    stateHandlerPush(&gGameState);
 }
 
 void onSelectBackArrowClickDone(void* context) {
     stateHandlerPop();
-    stateHandlerPush(&settings);
+    stateHandlerPush(&gSettingsState);
 }
 
 void onSelectBackArrowClick(void* context) {
@@ -56,7 +56,7 @@ void renderSelectState(void* context, float delta, SDL_Renderer* renderer, Asset
     // Top background.
     for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 6; y++) {
-            SDL_Rect dst = {top.x + x * 32, top.y + y * 32, 32, 32};
+            SDL_Rect dst = {gTop.x + x * 32, gTop.y + y * 32, 32, 32};
 
             Texture bg = y == 0 || y == 5 ? assets.menuDarkBg : assets.menuBg;
             SDL_RenderCopy(renderer, bg.ptr, NULL, &dst);
@@ -66,7 +66,7 @@ void renderSelectState(void* context, float delta, SDL_Renderer* renderer, Asset
     // Bottom background.
     for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 6; y++) {
-            SDL_Rect dst = {bottom.x + x * 32, bottom.y + y * 32, 32, 32};
+            SDL_Rect dst = {gBottom.x + x * 32, gBottom.y + y * 32, 32, 32};
             SDL_RenderCopy(renderer, assets.menuBg.ptr, NULL, &dst);
         }
     }
@@ -74,7 +74,7 @@ void renderSelectState(void* context, float delta, SDL_Renderer* renderer, Asset
     // Banner.
     {
         SDL_Rect src = {24, 0, 24, 32};
-        SDL_Rect dst = {bottom.x, bottom.y + 8, 24, 32};
+        SDL_Rect dst = {gBottom.x, gBottom.y + 8, 24, 32};
 
         SDL_RenderCopy(renderer, assets.banner.ptr, &src, &dst);
         dst.x += 24;
@@ -87,7 +87,7 @@ void renderSelectState(void* context, float delta, SDL_Renderer* renderer, Asset
         }
 
         src.x += 24;
-        dst.x = bottom.x + resolution.x - 2 * 24;
+        dst.x = gBottom.x + gResolution.x - 2 * 24;
         SDL_RenderCopy(renderer, assets.banner.ptr, &src, &dst);
         dst.x += 24;
         SDL_RenderCopy(renderer, assets.banner.ptr, &src, &dst);
@@ -96,7 +96,7 @@ void renderSelectState(void* context, float delta, SDL_Renderer* renderer, Asset
     // Level icons.
     for (int i = 0; i < levelCount; i++) {
         SDL_Rect borderSrc = {0, select.selected == i ? 0 : 64, 64, 64};
-        SDL_Rect borderDst = {bottom.x + select.levelIcons[i].dst.x - 8, bottom.y + select.levelIcons[i].dst.y - 8, 64, 64};
+        SDL_Rect borderDst = {gBottom.x + select.levelIcons[i].dst.x - 8, gBottom.y + select.levelIcons[i].dst.y - 8, 64, 64};
         SDL_RenderCopy(renderer, assets.borders.ptr, &borderSrc, &borderDst);
         
         SDL_Rect iconSrc = {0, select.levelIcons[i].src.y, 48, 48};
@@ -105,6 +105,6 @@ void renderSelectState(void* context, float delta, SDL_Renderer* renderer, Asset
     }
 
     // Back arrow.
-    SDL_Rect dst = {bottom.x + select.backArrowDst.x, bottom.y + select.backArrowDst.y, 30, 30};
+    SDL_Rect dst = {gBottom.x + select.backArrowDst.x, gBottom.y + select.backArrowDst.y, 30, 30};
     SDL_RenderCopy(renderer, assets.backArrow.ptr, NULL, &dst);
 }

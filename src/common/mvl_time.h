@@ -25,11 +25,11 @@ typedef struct {
     Timer timer;
 } Interval;
 
-extern Clock clock;
-extern Timeout* timeouts;
-extern int timeoutCount;
-extern Interval* intervals;
-extern int intervalCount;
+extern Clock gClock;
+extern Timeout* gTimeouts;
+extern int gTimeoutCount;
+extern Interval* gIntervals;
+extern int gIntervalCount;
 
 void timeInit();
 void tick();

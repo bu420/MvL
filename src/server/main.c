@@ -6,29 +6,48 @@
 
 void tcp() {
     TCPsocket socket;
-    TCPsocket clientSocket;
+    TCPsocket marioSocket;
+    TCPsocket luigiSocket;
 
     IPaddress ip;
-    IPaddress* clientIP;
+    IPaddress* marioIP;
+    IPaddress* luigiIP;
 
     SDLNet_ResolveHost(&ip, NULL, 2000);
     socket = SDLNet_TCP_Open(&ip);
 
+    printf("Server started on port 2000.\n");
+    printf("Waiting for Mario...\n");
+
     char buffer[512];
 
     while (true) {
-        if ((clientSocket = SDLNet_TCP_Accept(socket))) {
-            if ((clientIP = SDLNet_TCP_GetPeerAddress(clientSocket))) {
-                printf("New client: %x %d\n", SDLNet_Read32(&clientIP->host), SDLNet_Read16(&clientIP->port));
+        if ((marioSocket = SDLNet_TCP_Accept(socket))) {
+            if ((marioIP = SDLNet_TCP_GetPeerAddress(marioSocket))) {
+                printf("Mario connected: %x %d\n", SDLNet_Read32(&marioIP->host), SDLNet_Read16(&marioIP->port));
+                printf("Waiting for Luigi...\n");
 
                 while (true) {
-                    if (SDLNet_TCP_Recv(clientSocket, buffer, 512) > 0) {
-                        printf("Client: %s\n", buffer);
+                    if ((luigiSocket = SDLNet_TCP_Accept(socket))) {
+                        if ((luigiIP = SDLNet_TCP_GetPeerAddress(luigiSocket))) {
+                            printf("Luigi connected: %x %d\n", SDLNet_Read32(&luigiIP->host), SDLNet_Read16(&luigiIP->port));
+
+                            while (true) {
+                                if (SDLNet_TCP_Recv(marioSocket, buffer, 512) > 0) {
+                                    printf("Mario: %s\n", buffer);
+                                }
+
+                                if (SDLNet_TCP_Recv(luigiSocket, buffer, 512) > 0) {
+                                    printf("Luigi: %s\n", buffer);
+                                }
+                            }
+                        }
                     }
                 }
             }
 
-            SDLNet_TCP_Close(clientSocket);
+            SDLNet_TCP_Close(marioSocket);
+            SDLNet_TCP_Close(luigiSocket);
         }
     }
 

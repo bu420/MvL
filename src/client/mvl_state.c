@@ -3,25 +3,27 @@
 #include <assert.h>
 #include <stdio.h>
 
+#include "mvl_state_connect.h"
 #include "mvl_state_settings.h"
 #include "mvl_state_select.h"
 #include "mvl_state_game.h"
 
-StateHandler stateHandler;
+StateHandler gStateHandler;
 
-State settings;
-State select;
-State game;
+State gConnectState;
+State gSettingsState;
+State gSelectState;
+State gGameState;
 
 void stateHandlerInit() {
-    stateHandler.capacity = 8;
-    stateHandler.stack = malloc(stateHandler.capacity * sizeof(State*));
-    stateHandler.top = -1;
+    gStateHandler.capacity = 8;
+    gStateHandler.stack = malloc(gStateHandler.capacity * sizeof(State*));
+    gStateHandler.top = -1;
 }
 
 void stateHandlerPush(State* state) {
-    stateHandler.stack[++stateHandler.top] = state;
-    assert(stateHandler.top < stateHandler.capacity);
+    gStateHandler.stack[++gStateHandler.top] = state;
+    assert(gStateHandler.top < gStateHandler.capacity);
 
     if (state->init) {
         state->init(state->context);
@@ -29,12 +31,12 @@ void stateHandlerPush(State* state) {
 }
 
 void stateHandlerPop() {
-    assert(stateHandler.top >= 0);
-    stateHandler.stack[stateHandler.top--] = NULL;
+    assert(gStateHandler.top >= 0);
+    gStateHandler.stack[gStateHandler.top--] = NULL;
 }
 
 State* stateHandlerTop() {
-    return stateHandler.stack[stateHandler.top];
+    return gStateHandler.stack[gStateHandler.top];
 }
 
 void stateHandlerUpdate(float delta) {
@@ -54,18 +56,23 @@ void stateHandlerRender(float delta, SDL_Renderer* renderer, Assets assets) {
 }
 
 void statesInit() {
-    settings.context = malloc(sizeof(SettingsState));
-    settings.init = initSettingsState;
-    settings.update = updateSettingsState;
-    settings.render = renderSettingsState;
+    gConnectState.context = malloc(sizeof(ConnectState));
+    gConnectState.init = initConnectState;
+    gConnectState.update = updateConnectState;
+    gConnectState.render = renderConnectState;
 
-    select.context = malloc(sizeof(SelectState));
-    select.init = initSelectState;
-    select.update = updateSelectState;
-    select.render = renderSelectState;
+    gSettingsState.context = malloc(sizeof(SettingsState));
+    gSettingsState.init = initSettingsState;
+    gSettingsState.update = updateSettingsState;
+    gSettingsState.render = renderSettingsState;
 
-    game.context = malloc(sizeof(GameState));
-    game.init = initGameState;
-    game.update = updateGameState;
-    game.render = renderGameState;
+    gSelectState.context = malloc(sizeof(SelectState));
+    gSelectState.init = initSelectState;
+    gSelectState.update = updateSelectState;
+    gSelectState.render = renderSelectState;
+
+    gGameState.context = malloc(sizeof(GameState));
+    gGameState.init = initGameState;
+    gGameState.update = updateGameState;
+    gGameState.render = renderGameState;
 }

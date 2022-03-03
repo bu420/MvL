@@ -1,41 +1,41 @@
 #include "mvl_input.h"
 
-Keyboard keyboard;
-Mouse mouse;
+Keyboard gKeyboard;
+Mouse gMouse;
 
 void inputInit() {
-    for (int i = 0; i < keyboardKeyCount; i++) {
-        keyboard.keys[i] = keyboard.pressedThisFrame[i] = false;
+    for (int i = 0; i < gKeyboardKeyCount; i++) {
+        gKeyboard.keys[i] = gKeyboard.pressedThisFrame[i] = false;
     }
 
-    for (int i = 0; i < mouseButtonCount; i++) {
-        mouse.buttons[i] = mouse.pressedThisFrame[i] = false;
+    for (int i = 0; i < gMouseButtonCount; i++) {
+        gMouse.buttons[i] = gMouse.pressedThisFrame[i] = false;
     }
 }
 
 void inputUpdate(SDL_Event* mouseEvents, int count) {
-    // Keyboard.
+    // gKeyboard.
     uint8_t* keys = (uint8_t*)SDL_GetKeyboardState(NULL);
-    for (int i = 0; i < keyboardKeyCount; i++) {
+    for (int i = 0; i < gKeyboardKeyCount; i++) {
         if (keys[i]) {
-            if (!keyboard.keys[i]) {
-                keyboard.keys[i] = true;
-                keyboard.pressedThisFrame[i] = true;
+            if (!gKeyboard.keys[i]) {
+                gKeyboard.keys[i] = true;
+                gKeyboard.pressedThisFrame[i] = true;
             }
             else {
-                keyboard.pressedThisFrame[i] = false;
+                gKeyboard.pressedThisFrame[i] = false;
             }
         }
         else {
-            keyboard.keys[i] = false;
-            keyboard.pressedThisFrame[i] = false;
+            gKeyboard.keys[i] = false;
+            gKeyboard.pressedThisFrame[i] = false;
         }
     }
 
     // Mouse.
-    for (int i = 0; i < mouseButtonCount; i++) {
-        if (mouse.buttons[i] && mouse.pressedThisFrame[i]) {
-            mouse.pressedThisFrame[i] = false;
+    for (int i = 0; i < gMouseButtonCount; i++) {
+        if (gMouse.buttons[i] && gMouse.pressedThisFrame[i]) {
+            gMouse.pressedThisFrame[i] = false;
         }
     }
 
@@ -43,28 +43,28 @@ void inputUpdate(SDL_Event* mouseEvents, int count) {
         int button = mouseEvents[i].button.button;
 
         if (mouseEvents[i].type == SDL_MOUSEBUTTONDOWN) {
-            mouse.buttons[button] = mouse.pressedThisFrame[button] = true;
+            gMouse.buttons[button] = gMouse.pressedThisFrame[button] = true;
         }
         else if (mouseEvents[i].type == SDL_MOUSEBUTTONUP) {
-            mouse.buttons[button] = mouse.pressedThisFrame[button] = false;
+            gMouse.buttons[button] = gMouse.pressedThisFrame[button] = false;
         }
     }
 }
 
 bool keyHeld(SDL_Scancode scancode) {
-    return keyboard.keys[scancode];
+    return gKeyboard.keys[scancode];
 }
 
 bool keyPressed(SDL_Scancode scancode) {
-    return keyboard.keys[scancode] && keyboard.pressedThisFrame[scancode];
+    return gKeyboard.keys[scancode] && gKeyboard.pressedThisFrame[scancode];
 }
 
 bool mouseHeld(uint8_t button) {
-    return mouse.buttons[button];
+    return gMouse.buttons[button];
 }
 
 bool mousePressed(uint8_t button) {
-    return mouse.buttons[button] && mouse.pressedThisFrame[button];
+    return gMouse.buttons[button] && gMouse.pressedThisFrame[button];
 }
 
 Vec2i mousePos() {

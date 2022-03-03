@@ -2,7 +2,7 @@
 
 #include "mvl_asset.h"
 
-#define maxButtonCount 32
+#define gMaxButtonCount 32
 
 typedef void (*ButtonCallback)(void* context);
 typedef struct {
@@ -11,8 +11,8 @@ typedef struct {
     void* context;
 } Button;
 
-extern Button buttons[maxButtonCount];
-extern int buttonCount;
+extern Button gButtons[gMaxButtonCount];
+extern int gButtonCount;
 
 void registerButton(Button button);
 void handleButtons();

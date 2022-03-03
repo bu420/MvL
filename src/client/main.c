@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
     assert(Mix_OpenAudio(44100, AUDIO_S16SYS, 4, 512) == 0);
     assert(SDLNet_Init() == 0);
 
-    SDL_Window* window = SDL_CreateWindow("MvL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, resolution.x + 2 * gap, 2 * resolution.y + 3 * gap, SDL_WINDOW_RESIZABLE);
+    SDL_Window* window = SDL_CreateWindow("MvL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, gResolution.x + 2 * gGap, 2 * gResolution.y + 3 * gGap, SDL_WINDOW_RESIZABLE);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     Assets assets = loadAssets(renderer);
     SDL_SetWindowIcon(window, assets.icon);
@@ -79,9 +79,9 @@ int main(int argc, char** argv) {
     stateHandlerInit();
     statesInit();
 
-    stateHandlerPush(&settings);
+    stateHandlerPush(&gConnectState);
 
-    tcp();
+    //tcp();
 
     while (true) {
         // Update.
@@ -91,10 +91,10 @@ int main(int argc, char** argv) {
 
         Vec2i size;
         SDL_GetWindowSize(window, &size.x, &size.y);
-        top = (Vec2i){size.x / 2 - resolution.x / 2, size.y / 2 - (2 * resolution.y + gap) / 2};
-        bottom = (Vec2i){size.x / 2 - resolution.x / 2, size.y / 2 + gap / 2};
+        gTop = (Vec2i){size.x / 2 - gResolution.x / 2, size.y / 2 - (2 * gResolution.y + gGap) / 2};
+        gBottom = (Vec2i){size.x / 2 - gResolution.x / 2, size.y / 2 + gGap / 2};
 
-        stateHandlerUpdate(clock.delta);
+        stateHandlerUpdate(gClock.delta);
         handleButtons();
 
         // Render.
@@ -103,12 +103,12 @@ int main(int argc, char** argv) {
         SDL_RenderClear(renderer);
 
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-        SDL_Rect topDst = {top.x, top.y, resolution.x, resolution.y};
-        SDL_Rect bottomDst = {bottom.x, bottom.y, resolution.x, resolution.y};
+        SDL_Rect topDst = {gTop.x, gTop.y, gResolution.x, gResolution.y};
+        SDL_Rect bottomDst = {gBottom.x, gBottom.y, gResolution.x, gResolution.y};
         SDL_RenderFillRect(renderer, &topDst);
         SDL_RenderFillRect(renderer, &bottomDst);
 
-        stateHandlerRender(clock.delta, renderer, assets);
+        stateHandlerRender(gClock.delta, renderer, assets);
 
         SDL_RenderPresent(renderer);
     }
