@@ -26,6 +26,7 @@ typedef struct {
     Texture borders;
     Texture boxes;
     Texture levelIcons;
+    Texture blueBricks;
 } Assets;
 
 SDL_Surface* loadSurface(char* path);

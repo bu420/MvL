@@ -5,11 +5,13 @@
 
 #include "mvl_state_settings.h"
 #include "mvl_state_select.h"
+#include "mvl_state_game.h"
 
 StateHandler stateHandler;
 
 State settings;
 State select;
+State game;
 
 void stateHandlerInit() {
     stateHandler.capacity = 8;
@@ -52,13 +54,18 @@ void stateHandlerRender(float delta, SDL_Renderer* renderer, Assets assets) {
 }
 
 void statesInit() {
-    settings.context = malloc(sizeof(LevelSettings));
-    settings.init = initLevelSettings;
-    settings.update = updateLevelSettings;
-    settings.render = renderLevelSettings;
+    settings.context = malloc(sizeof(SettingsState));
+    settings.init = initSettingsState;
+    settings.update = updateSettingsState;
+    settings.render = renderSettingsState;
 
-    select.context = malloc(sizeof(LevelSelect));
-    select.init = initLevelSelect;
-    select.update = updateLevelSelect;
-    select.render = renderLevelSelect;
+    select.context = malloc(sizeof(SelectState));
+    select.init = initSelectState;
+    select.update = updateSelectState;
+    select.render = renderSelectState;
+
+    game.context = malloc(sizeof(GameState));
+    game.init = initGameState;
+    game.update = updateGameState;
+    game.render = renderGameState;
 }

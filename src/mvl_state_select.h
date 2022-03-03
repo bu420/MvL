@@ -14,8 +14,8 @@ typedef struct {
     int selected;
 
     SDL_Rect backArrowDst;
-} LevelSelect;
+} SelectState;
 
-void initLevelSelect(void* context);
-void updateLevelSelect(void* context, float delta);
-void renderLevelSelect(void* context, float delta, SDL_Renderer* renderer, Assets assets);
+void initSelectState(void* context);
+void updateSelectState(void* context, float delta);
+void renderSelectState(void* context, float delta, SDL_Renderer* renderer, Assets assets);

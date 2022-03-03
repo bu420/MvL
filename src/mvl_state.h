@@ -24,6 +24,7 @@ extern StateHandler stateHandler;
 
 extern State settings;
 extern State select;
+extern State game;
 
 void stateHandlerInit();
 void stateHandlerPush(State* state);

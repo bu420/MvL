@@ -18,7 +18,8 @@ Assets loadAssets(SDL_Renderer* renderer) {
         .arrows = loadTexture("asset/menu/arrows.png", renderer),
         .borders = loadTexture("asset/menu/borders.png", renderer),
         .boxes = loadTexture("asset/menu/boxes.png", renderer),
-        .levelIcons = loadTexture("asset/menu/level_icons.png", renderer)
+        .levelIcons = loadTexture("asset/menu/level_icons.png", renderer),
+        .blueBricks = loadTexture("asset/blue_bricks.png", renderer)
     };
 
     return assets;

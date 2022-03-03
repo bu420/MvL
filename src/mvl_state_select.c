@@ -4,8 +4,8 @@
 #include "mvl_ds.h"
 #include "mvl_time.h"
 
-void initLevelSelect(void* context) {
-    LevelSelect* select = context;
+void initSelectState(void* context) {
+    SelectState* select = context;
 
     select->backArrowDst = (SDL_Rect){224, 160, 30, 30};
     select->selected = 0;
@@ -17,7 +17,8 @@ void initLevelSelect(void* context) {
 }
 
 void onLevelIconClick(void* context) {
-    
+    stateHandlerPop();
+    stateHandlerPush(&game);
 }
 
 void onSelectBackArrowClickDone(void* context) {
@@ -26,14 +27,14 @@ void onSelectBackArrowClickDone(void* context) {
 }
 
 void onSelectBackArrowClick(void* context) {
-    LevelSelect* select = context;
+    SelectState* select = context;
     select->backArrowDst.x += 2;
     select->backArrowDst.y += 2;
     timeout(250, onSelectBackArrowClickDone, NULL);
 }
 
-void updateLevelSelect(void* context, float delta) {
-    LevelSelect* select = context;
+void updateSelectState(void* context, float delta) {
+    SelectState* select = context;
 
     if (keyPressed(SDL_SCANCODE_RIGHT)) {
         select->selected = select->selected == 4 ? 0 : select->selected + 1;
@@ -43,14 +44,14 @@ void updateLevelSelect(void* context, float delta) {
     }
 
     for (int i = 0; i < levelCount; i++) {
-        registerButton((Button){.area = select->levelIcons[i].dst, .callback = onLevelIconClick, .context = NULL});
+        registerButton((Button){.area = select->levelIcons[i].dst, .callback = onLevelIconClick, .context = context});
     }
 
     registerButton((Button){.area = select->backArrowDst, .callback = onSelectBackArrowClick, .context = context});
 }
 
-void renderLevelSelect(void* context, float delta, SDL_Renderer* renderer, Assets assets) {
-    LevelSelect select = *(LevelSelect*)context;
+void renderSelectState(void* context, float delta, SDL_Renderer* renderer, Assets assets) {
+    SelectState select = *(SelectState*)context;
     
     // Top background.
     for (int x = 0; x < 8; x++) {

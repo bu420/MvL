@@ -4,8 +4,8 @@
 #include "mvl_ds.h"
 #include "mvl_time.h"
 
-void initLevelSettings(void* context) {
-    LevelSettings* settings = context;
+void initSettingsState(void* context) {
+    SettingsState* settings = context;
 
     settings->selected = 0;
     settings->okDst = (SDL_Rect){100, 156, 64, 28};
@@ -18,14 +18,14 @@ void onSettingsOkClickDone(void* context) {
 }
 
 void onSettingsOkClick(void* context) {
-    LevelSettings* settings = context;
+    SettingsState* settings = context;
     settings->okDst.x += 2;
     settings->okDst.y += 2;
     timeout(250, onSettingsOkClickDone, NULL);
 }
 
-void updateLevelSettings(void* context, float delta) {
-    LevelSettings* settings = context;
+void updateSettingsState(void* context, float delta) {
+    SettingsState* settings = context;
 
     if (keyPressed(SDL_SCANCODE_UP)) {
         settings->selected = settings->selected == 0 ? 3 : settings->selected - 1;
@@ -37,8 +37,8 @@ void updateLevelSettings(void* context, float delta) {
     registerButton((Button){.area = settings->okDst, .callback = onSettingsOkClick, .context = context});
 }
 
-void renderLevelSettings(void* context, float delta, SDL_Renderer* renderer, Assets assets) {
-    LevelSettings* settings = context;
+void renderSettingsState(void* context, float delta, SDL_Renderer* renderer, Assets assets) {
+    SettingsState* settings = context;
 
     for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 6; y++) {
