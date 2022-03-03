@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
+#include <SDL2/SDL_net.h>
 
 #include "mvl_ds.h"
 #include "mvl_input.h"
@@ -32,6 +33,7 @@ int main(int argc, char** argv) {
     assert(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == 0);
     assert(TTF_Init() == 0);
     assert(Mix_OpenAudio(44100, AUDIO_S16SYS, 4, 512) == 0);
+    assert(SDLNet_Init() == 0);
 
     SDL_Window* window = SDL_CreateWindow("MvL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, resolution.x + 2 * gap, 2 * resolution.y + 3 * gap, SDL_WINDOW_RESIZABLE);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -43,6 +45,19 @@ int main(int argc, char** argv) {
     statesInit();
 
     stateHandlerPush(&settings);
+
+    UDPsocket socket = SDLNet_UDP_Open(0);
+
+    IPaddress serverIP;
+    SDLNet_ResolveHost(&serverIP, "localhost", 2000);
+
+    UDPpacket* packet = SDLNet_AllocPacket(512);
+    packet->address = serverIP;
+    char* msg = "quit";
+    packet->data = msg;
+    packet->len = strlen(msg) + 1;
+    SDLNet_UDP_Send(socket, -1, packet);
+    //SDLNet_FreePacket(packet);
 
     while (true) {
         // Update.
