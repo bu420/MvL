@@ -29,6 +29,41 @@ void handleEvents() {
     free(mouseEvents);
 }
 
+void tcp() {
+    IPaddress serverIP;
+    TCPsocket socket;
+
+    char* msg = "hello world!";
+
+    if (SDLNet_ResolveHost(&serverIP, "localhost", 2000) == 0) {
+        socket = SDLNet_TCP_Open(&serverIP);
+
+        int len = strlen(msg) + 1;
+
+        SDLNet_TCP_Send(socket, msg, len);
+    }
+    else {
+        printf("Could not resolve host.\n");
+    }
+
+    SDLNet_TCP_Close(socket);
+}
+
+void udp() {
+    UDPsocket socket = SDLNet_UDP_Open(0);
+
+    IPaddress serverIP;
+    SDLNet_ResolveHost(&serverIP, "localhost", 2000);
+
+    UDPpacket* packet = SDLNet_AllocPacket(512);
+    packet->address = serverIP;
+    char* msg = "quit";
+    packet->data = msg;
+    packet->len = strlen(msg) + 1;
+    SDLNet_UDP_Send(socket, -1, packet);
+    //SDLNet_FreePacket(packet);
+}
+
 int main(int argc, char** argv) {
     assert(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == 0);
     assert(TTF_Init() == 0);
@@ -46,18 +81,7 @@ int main(int argc, char** argv) {
 
     stateHandlerPush(&settings);
 
-    UDPsocket socket = SDLNet_UDP_Open(0);
-
-    IPaddress serverIP;
-    SDLNet_ResolveHost(&serverIP, "localhost", 2000);
-
-    UDPpacket* packet = SDLNet_AllocPacket(512);
-    packet->address = serverIP;
-    char* msg = "quit";
-    packet->data = msg;
-    packet->len = strlen(msg) + 1;
-    SDLNet_UDP_Send(socket, -1, packet);
-    //SDLNet_FreePacket(packet);
+    tcp();
 
     while (true) {
         // Update.
