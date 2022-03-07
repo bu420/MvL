@@ -1,68 +1,46 @@
 #include "mvl_state_game.h"
 
-/*
-#include <math.h>
+#include <cmath>
 
-#include "mvl_state.h"
-#include "mvl_ds.h"
 #include "mvl_time.h"
-
-void initGameState(void* context) {
-    GameState* game = context;
-
-    for (int i = 0; i < 10; i++) {
-        game->tiles[i] = (Vec2i){32 + i * 16, 32};
-    }
-
-    game->mario = (SDL_FRect){64, 16, 16, 16};
-}
-
-void updateGameState(void* context, float delta) {
-    GameState* game = context;
-
-    float speed = delta * .2f;
-
-    if (keyHeld(SDL_SCANCODE_LEFT)) {
-        game->mario.x -= speed;
-    }
-    if (keyHeld(SDL_SCANCODE_RIGHT)) {
-        game->mario.x += speed;
-    }
-    if (keyHeld(SDL_SCANCODE_UP)) {
-        game->mario.y -= speed;
-    }
-    if (keyHeld(SDL_SCANCODE_DOWN)) {
-        game->mario.y += speed;
-    }
-}
-
-void renderGameState(void* context, float delta, SDL_Renderer* renderer, Assets assets) {
-    GameState game = *(GameState*)context;
-    SDL_Rect mario = {roundf(game.mario.x), roundf(game.mario.y), game.mario.w, game.mario.h};
-
-    Vec2i camera = {gResolution.x / 2 - mario.x - mario.w / 2, gResolution.y / 2 - mario.y - mario.h / 2};
-
-    for (int i = 0; i < 10; i++) {
-        SDL_Rect dst = {gTop.x + game.tiles[i].x + camera.x, gTop.y + game.tiles[i].y + camera.y, 16, 16};
-        SDL_RenderCopy(renderer, assets.blueBricks.ptr, NULL, &dst);
-    }
-
-    SDL_Rect marioDst = {gTop.x + mario.x + camera.x, gTop.y + mario.y + camera.y, mario.w, mario.h};
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
-    SDL_RenderFillRect(renderer, &marioDst);
-}
-*/
+#include "mvl_input.h"
+#include "mvl_window.h"
+#include "mvl_renderer.h"
+#include "mvl_asset.h"
 
 using namespace mvl;
 
 void GameState::init() {
-    
+    for (int i = 0; i < 10; i++) {
+        tiles.push_back({32 + i * 16, 32});
+    }
+
+    mario = {64, 16, 16, 16};
 }
 
 void GameState::update() {
-    
+    float speed = Clock::get().getDelta() * .2f;
+
+    if (Input::get().keyHeld(SDL_SCANCODE_LEFT)) {
+        mario.x -= speed;
+    }
+    if (Input::get().keyHeld(SDL_SCANCODE_RIGHT)) {
+        mario.x += speed;
+    }
+    if (Input::get().keyHeld(SDL_SCANCODE_UP)) {
+        mario.y -= speed;
+    }
+    if (Input::get().keyHeld(SDL_SCANCODE_DOWN)) {
+        mario.y += speed;
+    }
 }
 
 void GameState::render() {
-    
+    Vec2i camera = {0, 0};//{Screen::res.x / 2 - mario.x - mario.w / 2, Screen::res.y / 2 - mario.y - mario.h / 2};
+
+    for (auto tile : tiles) {
+        Renderer::get().renderSurface(Assets::get().blueBricks, std::nullopt, SDL_Rect{tile.x + camera.x, tile.y + camera.y, 16, 16}, Window::get().bottom);
+    }
+
+    Renderer::get().fill({(int)mario.x + camera.x, (int)mario.y + camera.y, (int)mario.w, (int)mario.h}, {255, 0, 0, 255}, Window::get().bottom);
 }

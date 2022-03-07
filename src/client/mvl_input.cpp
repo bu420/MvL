@@ -56,9 +56,11 @@ void Input::updateKeyboard(std::vector<SDL_Event> events) {
         SDL_Scancode scancode = event.key.keysym.scancode;
 
         if (event.type == SDL_KEYDOWN) {
-            getKey(scancode).first = getKey(scancode).second = true;
+            if (!getKey(scancode).first) {
+                getKey(scancode).first = getKey(scancode).second = true;
+            }
         }
-        else if (event.type == SDL_KEYDOWN) {
+        else if (event.type == SDL_KEYUP) {
             getKey(scancode).first = getKey(scancode).second = false;
         }
     }
