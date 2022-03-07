@@ -1,5 +1,6 @@
 #include "mvl_state_game.h"
 
+/*
 #include <math.h>
 
 #include "mvl_state.h"
@@ -49,4 +50,19 @@ void renderGameState(void* context, float delta, SDL_Renderer* renderer, Assets 
     SDL_Rect marioDst = {gTop.x + mario.x + camera.x, gTop.y + mario.y + camera.y, mario.w, mario.h};
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, &marioDst);
+}
+*/
+
+using namespace mvl;
+
+void GameState::init() {
+    
+}
+
+void GameState::update() {
+    
+}
+
+void GameState::render() {
+    
 }

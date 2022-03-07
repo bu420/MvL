@@ -1,18 +1,22 @@
 #pragma once
 
-#include "mvl_asset.h"
+#include <SDL2/SDL.h>
+#include <functional>
+#include <vector>
+#include <optional>
 
-#define gMaxButtonCount 32
+#include "mvl_singleton.h"
+#include "mvl_window.h"
 
-typedef void (*ButtonCallback)(void* context);
-typedef struct {
-    SDL_Rect area;
-    ButtonCallback callback;
-    void* context;
-} Button;
+namespace mvl {
+    using Button = std::pair<SDL_Rect, std::function<void()>>;
 
-extern Button gButtons[gMaxButtonCount];
-extern int gButtonCount;
+    class Buttons : public Singleton<Buttons> {
+    public:
+        void reg(SDL_Rect area, std::optional<Screen> screen, std::function<void()> callback);
+        void handle();
 
-void registerButton(Button button);
-void handleButtons();
+    private:
+        std::vector<Button> buttons;
+    };
+}

@@ -3,35 +3,35 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
+#include <string>
 
-#include "mvl_math.h"
+#include "mvl_singleton.h"
 
-typedef struct {
-    SDL_Texture* ptr;
-    Vec2i size;
-} Texture;
+namespace mvl {
+    class Assets : public Singleton<Assets> {
+    public:
+        void load();
 
-typedef struct {
-    TTF_Font* font;
-    SDL_Surface* icon;
-    Texture numbers;
-    Texture text;
-    Texture menuBg;
-    Texture menuDarkBg;
-    Texture banner;
-    Texture backArrow;
-    Texture settings;
-    Texture button;
-    Texture arrows;
-    Texture borders;
-    Texture boxes;
-    Texture levelIcons;
-    Texture blueBricks;
-} Assets;
+        TTF_Font* font;
+        SDL_Surface* icon;
+        SDL_Surface* numbers;
+        SDL_Surface* text;
+        SDL_Surface* menuBg;
+        SDL_Surface* menuDarkBg;
+        SDL_Surface* banner;
+        SDL_Surface* backArrow;
+        SDL_Surface* settings;
+        SDL_Surface* button;
+        SDL_Surface* arrows;
+        SDL_Surface* borders;
+        SDL_Surface* boxes;
+        SDL_Surface* levelIcons;
+        SDL_Surface* blueBricks;
 
-SDL_Surface* loadSurface(char* path);
-Texture loadTexture(char* path, SDL_Renderer* renderer);
-TTF_Font* loadFont(char* path, int size);
-Mix_Chunk* loadSound(char* path);
-Assets loadAssets(SDL_Renderer* renderer);
-char* readFile(char* path);
+    private:
+        SDL_Surface* loadSurface(std::string path);
+        TTF_Font* loadFont(std::string path, int size);
+        Mix_Chunk* loadSound(std::string path);
+        std::string readFile(std::string path);
+    };
+}

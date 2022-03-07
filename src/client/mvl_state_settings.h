@@ -1,13 +1,18 @@
 #pragma once
 
-#include "mvl_asset.h"
+#include <SDL2/SDL.h>
 
-typedef struct {
-    int selected;
-    SDL_Rect okDst;
-    SDL_Rect backArrowDst;
-} SettingsState;
+#include "mvl_state.h"
 
-void initSettingsState(void* context);
-void updateSettingsState(void* context, float delta);
-void renderSettingsState(void* context, float delta, SDL_Renderer* renderer, Assets assets);
+namespace mvl {
+    class SettingsState : public State {
+    public:
+        void init() override;
+        void update() override;
+        void render() override;
+
+    private:
+        int selected;
+        SDL_Rect okDst;
+    };
+}

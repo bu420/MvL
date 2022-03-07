@@ -1,1 +1,1 @@
-gcc -Isrc/client -Isrc/common -Iinc -Llib -o client src/client/*.c src/common/*.c -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lSDL2_net
+g++ -Isrc/client -Isrc/common -Iinc -Llib -o client src/client/*.cpp src/common/*.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lSDL2_net

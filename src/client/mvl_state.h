@@ -1,37 +1,27 @@
 #pragma once
 
-#include "mvl_input.h"
-#include "mvl_asset.h"
+#include <functional>
+#include <vector>
 
-typedef void (*InitCallback)(void* context);
-typedef void (*UpdateCallback)(void* context, float delta);
-typedef void (*RenderCallback)(void* context, float delta, SDL_Renderer* renderer, Assets assets);
+#include "mvl_singleton.h"
 
-typedef struct {
-    void* context;
-    InitCallback init;
-    UpdateCallback update;
-    RenderCallback render;
-} State;
+namespace mvl {
+    class State {
+    public:
+        virtual void init() = 0;
+        virtual void update() = 0;
+        virtual void render() = 0;
+    };
 
-typedef struct {
-    State** stack;
-    int capacity;
-    int top;
-} StateHandler;
+    class StateHandler : public Singleton<StateHandler> {
+    public:
+        void push(State* state);
+        void pop();
+        State* top();
+        void update();
+        void render();
 
-extern StateHandler gStateHandler;
-
-extern State gConnectState;
-extern State gSettingsState;
-extern State gSelectState;
-extern State gGameState;
-
-void stateHandlerInit();
-void stateHandlerPush(State* state);
-void stateHandlerPop();
-State* stateHandlerTop();
-void stateHandlerUpdate(float delta);
-void stateHandlerRender(float delta, SDL_Renderer* renderer, Assets assets);
-
-void statesInit();
+    private:
+        std::vector<State*> stack;
+    };
+}

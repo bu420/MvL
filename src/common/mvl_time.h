@@ -1,37 +1,24 @@
 #pragma once
 
-typedef struct {
-    int last;
-    int delta;
-} Clock;
+#include <functional>
+#include <vector>
+#include <tuple>
 
-typedef struct {
-    int interval;
-    int end;
-} Timer;
+#include "mvl_singleton.h"
 
-typedef void (*TimeoutCallback)(void* context);
-typedef void (*IntervalCallback)(void* context);
+namespace mvl {
+    using Interval = std::tuple<int, int, std::function<bool()>>;
 
-typedef struct {
-    TimeoutCallback callback;
-    void* context;
-    Timer timer;
-} Timeout;
+    class Clock : public Singleton<Clock> {
+    public:
+        void init();
+        void tick();
+        int getDelta();
+        void setInterval(int ms, std::function<bool()> callback);
 
-typedef struct {
-    IntervalCallback callback;
-    void* context;
-    Timer timer;
-} Interval;
-
-extern Clock gClock;
-extern Timeout* gTimeouts;
-extern int gTimeoutCount;
-extern Interval* gIntervals;
-extern int gIntervalCount;
-
-void timeInit();
-void tick();
-void timeout(int ms, TimeoutCallback callback, void* context);
-void interval(int ms, IntervalCallback callback, void* context);
+    private:
+        int prev;
+        int delta;
+        std::vector<Interval> intervals;
+    };
+}

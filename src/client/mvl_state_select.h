@@ -1,21 +1,21 @@
 #pragma once
 
-#include "mvl_asset.h"
+#include <SDL2/SDL.h>
+#include <utility>
+#include <array>
 
-#define levelCount 5
+#include "mvl_state.h"
 
-typedef struct {
-    SDL_Rect src;
-    SDL_Rect dst;
-} LevelIcon;
+namespace mvl {
+    class SelectState : public State {
+    public:
+        void init() override;
+        void update() override;
+        void render() override;
 
-typedef struct {
-    LevelIcon levelIcons[levelCount];
-    int selected;
-
-    SDL_Rect backArrowDst;
-} SelectState;
-
-void initSelectState(void* context);
-void updateSelectState(void* context, float delta);
-void renderSelectState(void* context, float delta, SDL_Renderer* renderer, Assets assets);
+    private:
+        std::array<std::pair<SDL_Rect, SDL_Rect>, 5> icons;
+        int selected;
+        SDL_Rect backArrowDst;
+    };
+}

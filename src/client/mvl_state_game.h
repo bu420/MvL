@@ -1,13 +1,20 @@
 #pragma once
 
-#include "mvl_asset.h"
+#include <SDL2/SDL.h>
+#include <vector>
 
-typedef struct {
-    Vec2i tiles[10];
+#include "mvl_state.h"
+#include "mvl_math.h"
 
-    SDL_FRect mario;
-} GameState;
+namespace mvl {
+    class GameState : public State {
+    public:
+        void init() override;
+        void update() override;
+        void render() override;
 
-void initGameState(void* context);
-void updateGameState(void* context, float delta);
-void renderGameState(void* context, float delta, SDL_Renderer* renderer, Assets assets);
+    private:
+        std::vector<Vec2i> tiles;
+        SDL_FRect mario;
+    };
+}

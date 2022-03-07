@@ -1,11 +1,17 @@
 #pragma once
 
-#include "mvl_asset.h"
+#include <SDL2/SDL.h>
 
-typedef struct {
-    SDL_Rect okDst;
-} ConnectState;
+#include "mvl_state.h"
 
-void initConnectState(void* context);
-void updateConnectState(void* context, float delta);
-void renderConnectState(void* context, float delta, SDL_Renderer* renderer, Assets assets);
+namespace mvl {
+    class ConnectState : public State {
+    public:
+        void init() override;
+        void update() override;
+        void render() override;
+
+    private:
+        SDL_Rect okDst;
+    };
+}
