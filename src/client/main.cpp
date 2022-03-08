@@ -115,4 +115,6 @@ int main(int argc, char** argv) {
 
         SDL_RenderPresent(mvl::Renderer::get().renderer);
     }
+
+    return 0;
 }
