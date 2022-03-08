@@ -36,11 +36,11 @@ void GameState::update() {
 }
 
 void GameState::render() {
-    Vec2i camera = {0, 0};//{Screen::res.x / 2 - mario.x - mario.w / 2, Screen::res.y / 2 - mario.y - mario.h / 2};
+    Vec2i camera = {Screen::res.x / 2 - (int)mario.x - (int)mario.w / 2, Screen::res.y / 2 - (int)mario.y - (int)mario.h / 2};
 
     for (auto tile : tiles) {
-        Renderer::get().renderSurface(Assets::get().blueBricks, std::nullopt, SDL_Rect{tile.x + camera.x, tile.y + camera.y, 16, 16}, Window::get().bottom);
+        Renderer::get().renderSurface(Assets::get().blueBricks, std::nullopt, SDL_Rect{tile.x + camera.x, tile.y + camera.y, 16, 16}, Window::get().top);
     }
 
-    Renderer::get().fill({(int)mario.x + camera.x, (int)mario.y + camera.y, (int)mario.w, (int)mario.h}, {255, 0, 0, 255}, Window::get().bottom);
+    Renderer::get().fill({(int)mario.x + camera.x, (int)mario.y + camera.y, (int)mario.w, (int)mario.h}, {255, 0, 0, 255}, Window::get().top);
 }

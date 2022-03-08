@@ -7,16 +7,18 @@ using namespace mvl;
 
 void Renderer::init() {
     renderer = SDL_CreateRenderer(Window::get().window, -1, SDL_RENDERER_ACCELERATED);
+    Window::get().top.renderTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Screen::res.x, Screen::res.y);
+    Window::get().bottom.renderTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Screen::res.x, Screen::res.y);
+}
+
+void Renderer::renderTexture(SDL_Texture* texture, std::optional<SDL_Rect> src, std::optional<SDL_Rect> dst, std::optional<Screen> screen) {
+    SDL_SetRenderTarget(renderer, screen ? screen.value().renderTexture : nullptr);
+    SDL_RenderCopy(renderer, texture, src ? &src.value() : nullptr, dst ? &dst.value() : nullptr);
 }
 
 void Renderer::renderSurface(SDL_Surface* surface, std::optional<SDL_Rect> src, std::optional<SDL_Rect> dst, std::optional<Screen> screen) {
-    if (dst && screen) {
-        dst.value().x += screen.value().pos.x;
-        dst.value().y += screen.value().pos.y;
-    }
-
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_RenderCopy(renderer, texture, src ? &src.value() : nullptr, dst ? &dst.value() : nullptr);
+    renderTexture(texture, src, dst, screen);
     SDL_DestroyTexture(texture);
 }
 
@@ -27,11 +29,7 @@ void Renderer::renderSurface(SDL_Surface* surface, std::optional<SDL_Rect> src, 
  }
 
 void Renderer::fill(SDL_Rect area, SDL_Color color, std::optional<Screen> screen) {
-    if (screen) {
-        area.x += screen.value().pos.x;
-        area.y += screen.value().pos.y;
-    }
-    
+    SDL_SetRenderTarget(renderer, screen ? screen.value().renderTexture : nullptr);
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
     SDL_RenderFillRect(renderer, &area);
 }

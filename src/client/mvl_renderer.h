@@ -13,6 +13,7 @@ namespace mvl {
     class Renderer : public Singleton<Renderer> {
     public:
         void init();
+        void renderTexture(SDL_Texture* texture, std::optional<SDL_Rect> src, std::optional<SDL_Rect> dst, std::optional<Screen> screen = std::nullopt);
         void renderSurface(SDL_Surface* surface, std::optional<SDL_Rect> src, std::optional<SDL_Rect> dst, std::optional<Screen> screen = std::nullopt);
         void renderText(std::string text, TTF_Font* font, SDL_Color color, Vec2i pos, std::optional<Screen> screen = std::nullopt);
         void fill(SDL_Rect area, SDL_Color color, std::optional<Screen> screen = std::nullopt);

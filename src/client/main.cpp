@@ -101,16 +101,17 @@ int main(int argc, char** argv) {
 
         // Render.
 
-        SDL_SetRenderDrawColor(mvl::Renderer::get().renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-        SDL_RenderClear(mvl::Renderer::get().renderer);
+        mvl::Renderer::get().fill({0, 0, mvl::Window::get().size.x, mvl::Window::get().size.y}, {0, 0, 0, 255});
 
-        SDL_SetRenderDrawColor(mvl::Renderer::get().renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-        SDL_Rect topDst = {mvl::Window::get().top.pos.x, mvl::Window::get().top.pos.y, mvl::Screen::res.x, mvl::Screen::res.y};
-        SDL_Rect bottomDst = {mvl::Window::get().bottom.pos.x, mvl::Window::get().bottom.pos.y, mvl::Screen::res.x, mvl::Screen::res.y};
-        SDL_RenderFillRect(mvl::Renderer::get().renderer, &topDst);
-        SDL_RenderFillRect(mvl::Renderer::get().renderer, &bottomDst);
+        mvl::Screen top = mvl::Window::get().top;
+        mvl::Screen bottom = mvl::Window::get().bottom;
+        mvl::Renderer::get().fill({0, 0, mvl::Screen::res.x, mvl::Screen::res.y}, {255, 255, 255, 255}, top);
+        mvl::Renderer::get().fill({0, 0, mvl::Screen::res.x, mvl::Screen::res.y}, {255, 255, 255, 255}, bottom);
 
         mvl::StateHandler::get().render();
+
+        mvl::Renderer::get().renderTexture(top.renderTexture, std::nullopt, SDL_Rect{top.pos.x, top.pos.y, top.res.x, top.res.y});
+        mvl::Renderer::get().renderTexture(bottom.renderTexture, std::nullopt, SDL_Rect{bottom.pos.x, bottom.pos.y, bottom.res.x, bottom.res.y});
 
         SDL_RenderPresent(mvl::Renderer::get().renderer);
     }

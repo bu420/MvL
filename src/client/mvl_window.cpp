@@ -7,7 +7,7 @@ int Screen::gap = 16;
 
 void Window::init(std::string title) {
     size = Vec2i{Screen::res.x + 2 * Screen::gap, 2 * Screen::res.y + 3 * Screen::gap};
-    this->window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, size.x, size.y, SDL_WINDOW_RESIZABLE);
+    window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, size.x, size.y, SDL_WINDOW_RESIZABLE);
 }
 
 void Window::update() {

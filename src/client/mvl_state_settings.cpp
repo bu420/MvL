@@ -41,13 +41,9 @@ void SettingsState::render() {
     Renderer::get().renderMenuBackgrounds();
 
     for (int i = 0; i < 4; i++) {
-        Renderer::get().renderSurface(
-            Assets::get().settings, 
-            SDL_Rect{0, selected == i ? 0 : 32, 256, 32}, 
-            SDL_Rect{Window::get().bottom.pos.x, Window::get().bottom.pos.y + 4 + i * 36, 256, 32});
+        Renderer::get().renderSurface(Assets::get().settings, SDL_Rect{0, selected == i ? 0 : 32, 256, 32}, SDL_Rect{0, 4 + i * 36, 256, 32}, Window::get().bottom);
     }
 
-    Vec2i buttonDst = {Window::get().bottom.pos.x + okDst.x, Window::get().bottom.pos.y + okDst.y};
-    Renderer::get().renderSurface(Assets::get().button, std::nullopt, SDL_Rect{buttonDst.x, buttonDst.y, 64, 28});
-    Renderer::get().renderSurface(Assets::get().text, SDL_Rect{96, 0, 32, 16}, SDL_Rect{buttonDst.x + 16, buttonDst.y + 4, 32, 16});
+    Renderer::get().renderSurface(Assets::get().button, std::nullopt, okDst, Window::get().bottom);
+    Renderer::get().renderSurface(Assets::get().text, SDL_Rect{96, 0, 32, 16}, SDL_Rect{okDst.x + 16, okDst.y + 4, 32, 16}, Window::get().bottom);
 }
