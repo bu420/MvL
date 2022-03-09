@@ -10,6 +10,9 @@
 #include "mvl_menu.h"
 #include "mvl_time.h"
 #include "mvl_state_connect.h"
+#include "mvl_client.h"
+
+using namespace mvl;
 
 std::vector<SDL_Event> pollEvents() {
     std::vector<SDL_Event> events;
@@ -21,43 +24,6 @@ std::vector<SDL_Event> pollEvents() {
 
     return events;
 }
-
-/*
-void tcp() {
-    IPaddress serverIP;
-    TCPsocket socket;
-
-    char* msg = "hello world!";
-
-    if (SDLNet_ResolveHost(&serverIP, "localhost", 2000) == 0) {
-        socket = SDLNet_TCP_Open(&serverIP);
-
-        int len = strlen(msg) + 1;
-
-        SDLNet_TCP_Send(socket, msg, len);
-    }
-    else {
-        printf("Could not resolve host.\n");
-    }
-
-    SDLNet_TCP_Close(socket);
-}
-
-void udp() {
-    UDPsocket socket = SDLNet_UDP_Open(0);
-
-    IPaddress serverIP;
-    SDLNet_ResolveHost(&serverIP, "localhost", 2000);
-
-    UDPpacket* packet = SDLNet_AllocPacket(512);
-    packet->address = serverIP;
-    char* msg = "quit";
-    packet->data = (uint8_t*)msg;
-    packet->len = strlen(msg) + 1;
-    SDLNet_UDP_Send(socket, -1, packet);
-    //SDLNet_FreePacket(packet);
-}
-*/
 
 int main(int argc, char** argv) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
@@ -73,18 +39,19 @@ int main(int argc, char** argv) {
         throw std::runtime_error("Failed to init SDL net.");
     }
 
-    mvl::Window::get().init("MvL");
-    mvl::Renderer::get().init();
-    mvl::Assets::get().load();
-    mvl::Window::get().setIcon(mvl::Assets::get().icon);
-    mvl::Clock::get().init();
+    Window::get().init("MvL");
+    Renderer::get().init();
+    Assets::get().load();
+    Window::get().setIcon(Assets::get().icon);
+    Clock::get().init();
+    Client::get().init("localhost", 2000);
 
-    mvl::StateHandler::get().push(new mvl::ConnectState);
+    StateHandler::get().push(new ConnectState);
 
     while (true) {
         // Update.
 
-        mvl::Clock::get().tick();
+        Clock::get().tick();
 
         auto events = pollEvents();
         for (auto event : events) {
@@ -93,27 +60,27 @@ int main(int argc, char** argv) {
             }
         }
 
-        mvl::Input::get().update(events);
-        mvl::Window::get().update();
+        Input::get().update(events);
+        Window::get().update();
 
-        mvl::StateHandler::get().update();
-        mvl::Buttons::get().handle();
+        StateHandler::get().update();
+        Buttons::get().handle();
 
         // Render.
 
-        mvl::Renderer::get().fill({0, 0, mvl::Window::get().size.x, mvl::Window::get().size.y}, {0, 0, 0, 255});
+        Renderer::get().fill({0, 0, Window::get().size.x, Window::get().size.y}, {0, 0, 0, 255});
 
-        mvl::Screen top = mvl::Window::get().top;
-        mvl::Screen bottom = mvl::Window::get().bottom;
-        mvl::Renderer::get().fill({0, 0, mvl::Screen::res.x, mvl::Screen::res.y}, {255, 255, 255, 255}, top);
-        mvl::Renderer::get().fill({0, 0, mvl::Screen::res.x, mvl::Screen::res.y}, {255, 255, 255, 255}, bottom);
+        Screen top = Window::get().top;
+        Screen bottom = Window::get().bottom;
+        Renderer::get().fill({0, 0, Screen::res.x, Screen::res.y}, {255, 255, 255, 255}, top);
+        Renderer::get().fill({0, 0, Screen::res.x, Screen::res.y}, {255, 255, 255, 255}, bottom);
 
-        mvl::StateHandler::get().render();
+        StateHandler::get().render();
 
-        mvl::Renderer::get().renderTexture(top.renderTexture, std::nullopt, SDL_Rect{top.pos.x, top.pos.y, top.res.x, top.res.y});
-        mvl::Renderer::get().renderTexture(bottom.renderTexture, std::nullopt, SDL_Rect{bottom.pos.x, bottom.pos.y, bottom.res.x, bottom.res.y});
+        Renderer::get().renderTexture(top.renderTexture, std::nullopt, SDL_Rect{top.pos.x, top.pos.y, top.res.x, top.res.y});
+        Renderer::get().renderTexture(bottom.renderTexture, std::nullopt, SDL_Rect{bottom.pos.x, bottom.pos.y, bottom.res.x, bottom.res.y});
 
-        SDL_RenderPresent(mvl::Renderer::get().renderer);
+        SDL_RenderPresent(Renderer::get().renderer);
     }
 
     return 0;

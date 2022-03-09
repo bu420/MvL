@@ -12,6 +12,8 @@ namespace mvl {
         void render() override;
 
     private:
+        SDL_Rect connectDst;
+        bool connected;
         SDL_Rect okDst;
     };
 }
