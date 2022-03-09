@@ -1,9 +1,8 @@
 #include "mvl_window.h"
 
-using namespace mvl;
+#include "mvl_renderer.h"
 
-Vec2i Screen::res = {256, 192};
-int Screen::gap = 16;
+using namespace mvl;
 
 void Window::init(std::string title) {
     size = Vec2i{Screen::res.x + 2 * Screen::gap, 2 * Screen::res.y + 3 * Screen::gap};
@@ -13,11 +12,11 @@ void Window::init(std::string title) {
 void Window::update() {
     SDL_GetWindowSize(window, &size.x, &size.y);
 
-    top.pos.x = size.x / 2 - Screen::res.x / 2;
-    top.pos.y = size.y / 2 - (2 * Screen::res.y + Screen::gap) / 2;
+    Renderer::get().top.pos.x = size.x / 2 - Screen::res.x / 2;
+    Renderer::get().top.pos.y = size.y / 2 - (2 * Screen::res.y + Screen::gap) / 2;
 
-    bottom.pos.x = size.x / 2 - Screen::res.x / 2;
-    bottom.pos.y = size.y / 2 + Screen::gap / 2;
+    Renderer::get().bottom.pos.x = size.x / 2 - Screen::res.x / 2;
+    Renderer::get().bottom.pos.y = size.y / 2 + Screen::gap / 2;
 }
 
 void Window::setIcon(SDL_Surface* icon) {

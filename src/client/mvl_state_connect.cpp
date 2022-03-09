@@ -11,43 +11,40 @@
 using namespace mvl;
 
 void ConnectState::init() {
-    connectDst = {64, 52, 96, 32};
-    connected = false;
-    okDst = {100, 156, 64, 28};
+    okDst = {96, 156, 64, 28};
 }
 
 void ConnectState::update() {
-    Buttons::get().reg(connectDst, Window::get().bottom, [this]() -> void {
-        if (Client::get().connect()) {
-            connected = true;
-        }
-    });
+    Buttons::get().reg(okDst, Renderer::get().bottom, [this]() -> void {
+        okDst.x += 2;
+        okDst.y += 2;
 
-    if (connected) {
-        Buttons::get().reg(okDst, Window::get().bottom, [this]() -> void {
-            okDst.x += 2;
-            okDst.y += 2;
-
-            Clock::get().setInterval(250, [this]() -> bool {
+        Clock::get().setInterval(250, [this]() -> bool {
+            if (Client::get().connect()) {
                 StateHandler::get().pop();
                 StateHandler::get().push(new SettingsState);
-                return false;
-            });
+            }
+            else {
+                okDst.x -= 2;
+                okDst.y -= 2;
+            }
+
+            return false;
         });
-    }
+    });
 }
     
 void ConnectState::render() {
-    Renderer::get().renderMenuBackgrounds();
+    Renderer& rndrr = Renderer::get();
 
-    Renderer::get().fill({16, 48, 224, 96}, {0, 0, 0, 255}, Window::get().top);
-    Renderer::get().renderText("Connect To Server", Assets::get().font, {200, 200, 200, 255}, {56, 84}, Window::get().top);
+    rndrr.renderMenuBackgrounds();
 
-    Renderer::get().fill(connectDst, {255, 255, 255, 255}, Window::get().bottom);
-    Renderer::get().renderText("Connect", Assets::get().font, {0, 0, 0, 255}, {connectDst.x + 16, connectDst.y + 6}, Window::get().bottom);
+    rndrr.fill({16, 48, 224, 96}, {0, 0, 0, 255}, rndrr.top);
+    rndrr.renderText("Connect To Server", Assets::get().font, {255, 255, 255, 255}, {44, 84}, rndrr.top);
+    rndrr.renderSurface(Assets::get().net, SDL_Rect{0, 0, 16, 16}, SDL_Rect{206, 86, 16, 16}, rndrr.top);
 
-    if (connected) {
-        Renderer::get().renderSurface(Assets::get().button, std::nullopt, okDst, Window::get().bottom);
-        Renderer::get().renderSurface(Assets::get().text, SDL_Rect{96, 0, 32, 16}, SDL_Rect{okDst.x + 16, okDst.y + 4, 32, 16}, Window::get().bottom);
-    }
+    rndrr.renderSurface(Assets::get().button, std::nullopt, okDst, rndrr.bottom);
+    rndrr.renderSurface(Assets::get().text, SDL_Rect{96, 0, 32, 16}, SDL_Rect{okDst.x + 16, okDst.y + 4, 32, 16}, rndrr.bottom);
+
+    rndrr.renderSurface(Assets::get().net, SDL_Rect{0, 16, 16, 16}, SDL_Rect{2, 174, 16, 16}, rndrr.bottom);
 }

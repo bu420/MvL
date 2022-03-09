@@ -17,7 +17,6 @@ namespace mvl {
         SDL_Surface* numbers;
         SDL_Surface* text;
         SDL_Surface* menuBg;
-        SDL_Surface* menuDarkBg;
         SDL_Surface* banner;
         SDL_Surface* backArrow;
         SDL_Surface* settings;
@@ -26,6 +25,7 @@ namespace mvl {
         SDL_Surface* borders;
         SDL_Surface* boxes;
         SDL_Surface* levelIcons;
+        SDL_Surface* net;
         SDL_Surface* blueBricks;
 
     private:

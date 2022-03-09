@@ -12,7 +12,7 @@ using namespace mvl;
 
 void SettingsState::init() {
     selected = 0;
-    okDst = SDL_Rect{100, 156, 64, 28};
+    okDst = SDL_Rect{96, 156, 64, 28};
 }
 
 void SettingsState::update() {
@@ -23,7 +23,7 @@ void SettingsState::update() {
         selected = selected == 3 ? 0 : selected + 1;
     }
 
-    Buttons::get().reg(okDst, Window::get().bottom, [this]() -> void {
+    Buttons::get().reg(okDst, Renderer::get().bottom, [this]() -> void {
         okDst.x += 2;
         okDst.y += 2;
 
@@ -40,10 +40,14 @@ void SettingsState::update() {
 void SettingsState::render() {
     Renderer::get().renderMenuBackgrounds();
 
+    Renderer::get().fill({16, 48, 224, 96}, {0, 0, 0, 255}, Renderer::get().top);
+
     for (int i = 0; i < 4; i++) {
-        Renderer::get().renderSurface(Assets::get().settings, SDL_Rect{0, selected == i ? 0 : 32, 256, 32}, SDL_Rect{0, 4 + i * 36, 256, 32}, Window::get().bottom);
+        Renderer::get().renderSurface(Assets::get().settings, SDL_Rect{0, selected == i ? 0 : 32, 256, 32}, SDL_Rect{0, 4 + i * 36, 256, 32}, Renderer::get().bottom);
     }
 
-    Renderer::get().renderSurface(Assets::get().button, std::nullopt, okDst, Window::get().bottom);
-    Renderer::get().renderSurface(Assets::get().text, SDL_Rect{96, 0, 32, 16}, SDL_Rect{okDst.x + 16, okDst.y + 4, 32, 16}, Window::get().bottom);
+    Renderer::get().renderSurface(Assets::get().button, std::nullopt, okDst, Renderer::get().bottom);
+    Renderer::get().renderSurface(Assets::get().text, SDL_Rect{96, 0, 32, 16}, SDL_Rect{okDst.x + 16, okDst.y + 4, 32, 16}, Renderer::get().bottom);
+
+    Renderer::get().renderSurface(Assets::get().net, SDL_Rect{0, 32, 16, 16}, SDL_Rect{2, 174, 16, 16}, Renderer::get().bottom);
 }

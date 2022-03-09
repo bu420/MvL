@@ -70,8 +70,8 @@ int main(int argc, char** argv) {
 
         Renderer::get().fill({0, 0, Window::get().size.x, Window::get().size.y}, {0, 0, 0, 255});
 
-        Screen top = Window::get().top;
-        Screen bottom = Window::get().bottom;
+        Screen top = Renderer::get().top;
+        Screen bottom = Renderer::get().bottom;
         Renderer::get().fill({0, 0, Screen::res.x, Screen::res.y}, {255, 255, 255, 255}, top);
         Renderer::get().fill({0, 0, Screen::res.x, Screen::res.y}, {255, 255, 255, 255}, bottom);
 

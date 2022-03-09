@@ -13,8 +13,7 @@ void Assets::load() {
     icon = loadSurface("asset/icon.png");
     numbers = loadSurface("asset/menu/numbers.png");
     text = loadSurface("asset/menu/text.png");
-    menuBg = loadSurface("asset/menu/menu_bg.png");
-    menuDarkBg = loadSurface("asset/menu/menu_dark_bg.png");
+    menuBg = loadSurface("asset/menu/bg.png");
     banner = loadSurface("asset/menu/banner.png");
     backArrow = loadSurface("asset/menu/back_arrow.png");
     settings = loadSurface("asset/menu/settings.png");
@@ -23,6 +22,7 @@ void Assets::load() {
     borders = loadSurface("asset/menu/borders.png");
     boxes = loadSurface("asset/menu/boxes.png");
     levelIcons = loadSurface("asset/menu/level_icons.png");
+    net = loadSurface("asset/menu/net.png");
     blueBricks = loadSurface("asset/blue_bricks.png");
 }
 

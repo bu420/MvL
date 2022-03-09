@@ -1,5 +1,7 @@
 #include "mvl_client.h"
 
+#include <iostream>
+
 using namespace mvl;
 
 void Client::init(std::string host, int port) {
@@ -12,13 +14,13 @@ void Client::init(std::string host, int port) {
 
 bool Client::connect() {
     if (SDLNet_ResolveHost(&serverIP, host.c_str(), port) == 0) {
-        tcpSocket = SDLNet_TCP_Open(&serverIP);
-        return true;
+        if ((tcpSocket = SDLNet_TCP_Open(&serverIP))) {
+            return true;
+        }
     }
-    else {
-        printf("Could not resolve host.\n");
-        return false;
-    }
+
+    std::cout << "Failed to connect to server." << std::endl;
+    return false;
 }
 
 void Client::tcpSend(void* data, int len) {

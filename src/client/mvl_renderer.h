@@ -7,9 +7,15 @@
 
 #include "mvl_singleton.h"
 #include "mvl_math.h"
-#include "mvl_window.h"
 
 namespace mvl {
+    struct Screen {
+        static Vec2i res;
+        static int gap;
+        Vec2i pos;
+        SDL_Texture* renderTexture;
+    };
+
     class Renderer : public Singleton<Renderer> {
     public:
         void init();
@@ -20,5 +26,7 @@ namespace mvl {
         void renderMenuBackgrounds();
 
         SDL_Renderer* renderer;
+        Screen top;
+        Screen bottom;
     };
 }

@@ -6,7 +6,7 @@
 #include <optional>
 
 #include "mvl_singleton.h"
-#include "mvl_window.h"
+#include "mvl_renderer.h"
 
 namespace mvl {
     using Button = std::pair<SDL_Rect, std::function<void()>>;

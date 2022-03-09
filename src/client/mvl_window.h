@@ -7,13 +7,6 @@
 #include "mvl_singleton.h"
 
 namespace mvl {
-    struct Screen {
-        static Vec2i res;
-        static int gap;
-        Vec2i pos;
-        SDL_Texture* renderTexture;
-    };
-
     class Window : public Singleton<Window> {
     public:
         void init(std::string title);
@@ -22,8 +15,5 @@ namespace mvl {
 
         SDL_Window* window;
         Vec2i size;
-
-        Screen top;
-        Screen bottom;
     };
 }

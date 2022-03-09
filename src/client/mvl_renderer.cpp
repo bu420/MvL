@@ -5,10 +5,13 @@
 
 using namespace mvl;
 
+Vec2i Screen::res = {256, 192};
+int Screen::gap = 16;
+
 void Renderer::init() {
     renderer = SDL_CreateRenderer(Window::get().window, -1, SDL_RENDERER_ACCELERATED);
-    Window::get().top.renderTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Screen::res.x, Screen::res.y);
-    Window::get().bottom.renderTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Screen::res.x, Screen::res.y);
+    top.renderTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Screen::res.x, Screen::res.y);
+    bottom.renderTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Screen::res.x, Screen::res.y);
 }
 
 void Renderer::renderTexture(SDL_Texture* texture, std::optional<SDL_Rect> src, std::optional<SDL_Rect> dst, std::optional<Screen> screen) {
@@ -37,8 +40,8 @@ void Renderer::fill(SDL_Rect area, SDL_Color color, std::optional<Screen> screen
 void Renderer::renderMenuBackgrounds() {
     for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 6; y++) {
-            renderSurface(y == 0 || y == 5 ? Assets::get().menuDarkBg : Assets::get().menuBg, std::nullopt, SDL_Rect{x * 32, y * 32, 32, 32}, Window::get().top);
-            renderSurface(Assets::get().menuBg, std::nullopt, SDL_Rect{x * 32, y * 32, 32, 32}, Window::get().bottom);
+            renderSurface(Assets::get().menuBg, SDL_Rect{0, y == 0 || y == 5 ? 32 : 0, 32, 32}, SDL_Rect{x * 32, y * 32, 32, 32}, top);
+            renderSurface(Assets::get().menuBg, SDL_Rect{0, 0, 32, 32}, SDL_Rect{x * 32, y * 32, 32, 32}, bottom);
         }
     }
 }
