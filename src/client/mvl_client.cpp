@@ -4,32 +4,71 @@
 
 using namespace mvl;
 
-void Client::init(std::string host, int port) {
-    this->host = host;
-    this->port = port;
-
-    udpSocket = SDLNet_UDP_Open(0);
-    packet = SDLNet_AllocPacket(512);
+void Client::init() {
+    client = enet_host_create(nullptr, 1, 2, 0, 0);
 }
 
-bool Client::connect() {
-    if (SDLNet_ResolveHost(&serverIP, host.c_str(), port) == 0) {
-        if ((tcpSocket = SDLNet_TCP_Open(&serverIP))) {
+bool Client::connect(std::string host, int port) {
+    if (connected()) {
+        return true;
+    }
+
+    enet_address_set_host(&serverAddress, host.c_str());
+    serverAddress.port = port;
+
+    if (!(server = enet_host_connect(client, &serverAddress, 2, 0))) {
+        return false;
+    }
+
+    ENetEvent event;
+    if (enet_host_service(client, &event, 2000) > 0) {
+        if (event.type == ENET_EVENT_TYPE_CONNECT) {
             return true;
         }
     }
 
-    std::cout << "Failed to connect to server." << std::endl;
+    enet_peer_reset(server);
+    server = nullptr;
+
     return false;
 }
 
-void Client::tcpSend(void* data, int len) {
-    SDLNet_TCP_Send(tcpSocket, data, len);
+bool Client::connected() {
+    if (!client) {
+        return false;
+    }
+
+    return client->connectedPeers > 0;
 }
 
-void Client::udpSend(void* data, int len) {
-    packet->address = serverIP;
-    packet->data = (uint8_t*)data;
-    packet->len = len;
-    SDLNet_UDP_Send(udpSocket, -1, packet);
+std::vector<std::pair<ENetPeer*, std::string>> Client::update() {
+    std::vector<std::pair<ENetPeer*, std::string>> packets;
+
+    std::cout << "DEBUG 1" << std::endl;
+
+    ENetEvent event;
+    while (enet_host_service(client, &event, 0) > 0) {
+        std::cout << "DEBUG 2" << std::endl;
+        switch (event.type) {
+        case ENET_EVENT_TYPE_DISCONNECT:
+            std::cout << "Disconnected." << std::endl;
+            break;
+
+        case ENET_EVENT_TYPE_RECEIVE:
+            packets.push_back(std::make_pair(event.peer, (char*)event.packet->data));
+            enet_packet_destroy(event.packet);
+        }
+    }
+
+    return packets;
+}
+
+void Client::send(std::string message, bool reliable) {
+    if (!connected()) {
+        return;
+    }
+
+    ENetPacket* packet = enet_packet_create(message.c_str(), message.size() + 1, reliable ? ENET_PACKET_FLAG_RELIABLE : ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT);
+    enet_peer_send(server, 0, packet);
+    enet_packet_destroy(packet);
 }

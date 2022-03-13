@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <string>
 
 #include "mvl_state.h"
 
@@ -13,5 +14,7 @@ namespace mvl {
 
     private:
         SDL_Rect okDst;
+        std::string host;
+        int port;
     };
 }

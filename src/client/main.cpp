@@ -1,6 +1,7 @@
-#include <SDL2/SDL_net.h>
+#include <enet/enet.h>
 #include <vector>
 #include <stdexcept>
+#include <iostream>
 
 #include "mvl_window.h"
 #include "mvl_renderer.h"
@@ -26,61 +27,69 @@ std::vector<SDL_Event> pollEvents() {
 }
 
 int main(int argc, char** argv) {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
-        throw std::runtime_error("Failed to init SDL video and audio.");
-    }
-    if (TTF_Init() != 0) {
-        throw std::runtime_error("Failed to init SDL TTF.");
-    }
-    if (Mix_OpenAudio(44100, AUDIO_S16SYS, 4, 512) != 0) {
-        throw std::runtime_error("Failed to init SDL mixer.");
-    }
-    if (SDLNet_Init() != 0) {
-        throw std::runtime_error("Failed to init SDL net.");
-    }
-
-    Window::get().init("MvL");
-    Renderer::get().init();
-    Assets::get().load();
-    Window::get().setIcon(Assets::get().icon);
-    Clock::get().init();
-    Client::get().init("localhost", 2000);
-
-    StateHandler::get().push(new ConnectState);
-
-    while (true) {
-        // Update.
-
-        Clock::get().tick();
-
-        auto events = pollEvents();
-        for (auto event : events) {
-            if (event.type == SDL_QUIT) {
-                return 0;
-            }
+    try {
+        if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
+            throw std::runtime_error("Failed to init SDL video and audio.");
+        }
+        if (TTF_Init() != 0) {
+            throw std::runtime_error("Failed to init SDL TTF.");
+        }
+        if (Mix_OpenAudio(44100, AUDIO_S16SYS, 4, 512) != 0) {
+            throw std::runtime_error("Failed to init SDL mixer.");
+        }
+        if (enet_initialize()) {
+            throw std::runtime_error("Failed to init ENet.");
         }
 
-        Input::get().update(events);
-        Window::get().update();
+        Window::get().init("MvL");
+        Renderer::get().init();
+        Assets::get().load();
+        Window::get().setIcon(Assets::get().icon);
+        Clock::get().init();
+        Client::get().init();
 
-        StateHandler::get().update();
-        Buttons::get().handle();
+        StateHandler::get().push(new ConnectState);
 
-        // Render.
+        while (true) {
+            // Update.
 
-        Renderer::get().fill({0, 0, Window::get().size.x, Window::get().size.y}, {0, 0, 0, 255});
+            Clock::get().tick();
 
-        Screen top = Renderer::get().top;
-        Screen bottom = Renderer::get().bottom;
-        Renderer::get().fill({0, 0, Screen::res.x, Screen::res.y}, {255, 255, 255, 255}, top);
-        Renderer::get().fill({0, 0, Screen::res.x, Screen::res.y}, {255, 255, 255, 255}, bottom);
+            auto events = pollEvents();
+            for (auto event : events) {
+                if (event.type == SDL_QUIT) {
+                    return 0;
+                }
+            }
 
-        StateHandler::get().render();
+            Input::get().update(events);
+            Window::get().update();
+            StateHandler::get().update();
+            
+            Buttons::get().handle();
 
-        Renderer::get().renderTexture(top.renderTexture, std::nullopt, SDL_Rect{top.pos.x, top.pos.y, top.res.x, top.res.y});
-        Renderer::get().renderTexture(bottom.renderTexture, std::nullopt, SDL_Rect{bottom.pos.x, bottom.pos.y, bottom.res.x, bottom.res.y});
+            // Render.
 
-        SDL_RenderPresent(Renderer::get().renderer);
+            Renderer::get().fill({0, 0, Window::get().size.x, Window::get().size.y}, {0, 0, 0, 255});
+
+            Screen top = Renderer::get().top;
+            Screen bottom = Renderer::get().bottom;
+            Renderer::get().fill({0, 0, Screen::res.x, Screen::res.y}, {255, 255, 255, 255}, top);
+            Renderer::get().fill({0, 0, Screen::res.x, Screen::res.y}, {255, 255, 255, 255}, bottom);
+
+            StateHandler::get().render();
+
+            Renderer::get().renderTexture(top.renderTexture, std::nullopt, SDL_Rect{top.pos.x, top.pos.y, top.res.x, top.res.y});
+            Renderer::get().renderTexture(bottom.renderTexture, std::nullopt, SDL_Rect{bottom.pos.x, bottom.pos.y, bottom.res.x, bottom.res.y});
+
+            SDL_RenderPresent(Renderer::get().renderer);
+        }
+    }
+    catch (std::runtime_error e) {
+        std::cout << "Runtime error: " << e.what() << std::endl;
+    }
+    catch (std::exception e) {
+        std::cout << "Exception: " << e.what() << std::endl;
     }
 
     return 0;
