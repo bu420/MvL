@@ -1,0 +1,29 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "Build Client ✨",
+			"command": "C:\\Users\\ludvi\\Programming\\MvL\\compile_client.bat",
+			"group": "build",
+			"detail": "compiler: C:\\msys64\\mingw64\\bin\\g++.exe",
+			"presentation": {
+				"reveal": "silent",
+				"close": true,
+				"clear": true
+			}
+		},
+		{
+			"type": "shell",
+			"label": "Build Server 🥂",
+			"command": "C:\\Users\\ludvi\\Programming\\MvL\\compile_server.bat",
+			"group": "build",
+			"detail": "compiler: C:\\msys64\\mingw64\\bin\\g++.exe",
+			"presentation": {
+				"reveal": "silent",
+				"close": true,
+				"clear": true
+			}
+		}
+	]
+}

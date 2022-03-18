@@ -5,7 +5,9 @@
 using namespace mvl;
 
 void Client::init() {
-    client = enet_host_create(nullptr, 1, 2, 0, 0);
+    if (!(client = enet_host_create(nullptr, 1, 2, 0, 0))) {
+        throw std::runtime_error("Failed to create ENet client.");
+    }
 }
 
 bool Client::connect(std::string host, int port) {
@@ -44,14 +46,12 @@ bool Client::connected() {
 std::vector<std::pair<ENetPeer*, std::string>> Client::update() {
     std::vector<std::pair<ENetPeer*, std::string>> packets;
 
-    std::cout << "DEBUG 1" << std::endl;
-
     ENetEvent event;
     while (enet_host_service(client, &event, 0) > 0) {
-        std::cout << "DEBUG 2" << std::endl;
         switch (event.type) {
         case ENET_EVENT_TYPE_DISCONNECT:
             std::cout << "Disconnected." << std::endl;
+            client = nullptr;
             break;
 
         case ENET_EVENT_TYPE_RECEIVE:

@@ -30,7 +30,7 @@ void ConnectState::update() {
                 std::cout << "Connected." << std::endl;
 
                 std::cout << "Sending packet..." << std::endl;
-                Client::get().send("Hello from client", false);
+                Client::get().send("Hello from client", true);
                 std::cout << "Sent!" << std::endl;
 
                 //StateHandler::get().pop();
@@ -51,6 +51,7 @@ void ConnectState::update() {
     auto packets = Client::get().update();
 
     for (auto packet : packets) {
+        std::cout << "Address: " << packet.first << std::endl;
         std::cout << "Received " << packet.second << " from " << packet.first->address.host << "." << std::endl;
     }
 }

@@ -27,12 +27,12 @@ std::vector<std::pair<ENetPeer*, std::string>> Server::update() {
             if (!mario) {
                 mario = event.peer;
                 std::cout << "Mario connected." << std::endl;
-                marioSend("Hello there Mario!", true);
+                //marioSend("Hello there Mario!", true);
             }
             else if (!luigi) {
                 luigi = event.peer;
                 std::cout << "Luigi connected." << std::endl;
-                luigiSend("Hello there Luigi!", true);
+                //luigiSend("Hello there Luigi!", true);
             }
             else {
                 enet_peer_reset(event.peer);
