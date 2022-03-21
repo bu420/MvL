@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
             auto packets = server.update();
 
             for (auto packet : packets) {
-                std::cout << "Received " << packet.second << " from " << server.convertHost(packet.first->address.host) << ":" << packet.first->address.port << "." << std::endl;
+                std::cout << "Received '" << packet.second << "' from " << server.convertHost(packet.first->address.host) << ":" << packet.first->address.port << "." << std::endl;
             }
         }
     }

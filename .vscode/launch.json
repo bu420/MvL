@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Client ✨",
+            "name": "Dbg Client ✨",
             "type": "cppdbg",
             "request": "launch",
             "cwd": "C:\\Users\\ludvi\\Programming\\MvL",
@@ -25,7 +25,7 @@
             ]
         },
         {
-            "name": "Server 🥂",
+            "name": "Dbg Server 🥂",
             "type": "cppdbg",
             "request": "launch",
             "cwd": "C:\\Users\\ludvi\\Programming\\MvL",

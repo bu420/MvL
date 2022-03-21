@@ -27,12 +27,10 @@ std::vector<std::pair<ENetPeer*, std::string>> Server::update() {
             if (!mario) {
                 mario = event.peer;
                 std::cout << "Mario connected." << std::endl;
-                //marioSend("Hello there Mario!", true);
             }
             else if (!luigi) {
                 luigi = event.peer;
                 std::cout << "Luigi connected." << std::endl;
-                //luigiSend("Hello there Luigi!", true);
             }
             else {
                 enet_peer_reset(event.peer);
@@ -70,19 +68,16 @@ std::vector<std::pair<ENetPeer*, std::string>> Server::update() {
 void Server::marioSend(std::string message, bool reliable) {
     ENetPacket* packet = enet_packet_create(message.c_str(), message.size() + 1, reliable ? ENET_PACKET_FLAG_RELIABLE : ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT);
     enet_peer_send(mario, 0, packet);
-    enet_packet_destroy(packet);
 }
 
 void Server::luigiSend(std::string message, bool reliable) {
     ENetPacket* packet = enet_packet_create(message.c_str(), message.size() + 1, reliable ? ENET_PACKET_FLAG_RELIABLE : ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT);
     enet_peer_send(luigi, 0, packet);
-    enet_packet_destroy(packet);
 }
 
 void Server::broadcast(std::string message, bool reliable) {
     ENetPacket* packet = enet_packet_create(message.c_str(), message.size() + 1, reliable ? ENET_PACKET_FLAG_RELIABLE : ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT);
     enet_host_broadcast(server, 0, packet);
-    enet_packet_destroy(packet);
 }
 
 std::string Server::convertHost(enet_uint32 host) {

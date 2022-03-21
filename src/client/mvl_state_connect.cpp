@@ -26,20 +26,26 @@ void ConnectState::update() {
         okDst.y += 2;
 
         Clock::get().setInterval(250, [this]() -> bool {
-            if (Client::get().connect(host, port)) {
-                std::cout << "Connected." << std::endl;
+            if (!Client::get().connected()) {
+                if (Client::get().connect(host, port)) {
+                    std::cout << "Connected." << std::endl;
 
-                std::cout << "Sending packet..." << std::endl;
-                Client::get().send("Hello from client", true);
-                std::cout << "Sent!" << std::endl;
+                    std::cout << "Sending packet..." << std::endl;
+                    Client::get().send("Hello from client", false);
+                    std::cout << "Sent!" << std::endl;
 
-                //StateHandler::get().pop();
-                //StateHandler::get().push(new SettingsState);
-                //Client::get().send("Hello there.", true);
+                    //StateHandler::get().pop();
+                    //StateHandler::get().push(new SettingsState);
+                    //Client::get().send("Hello there.", true);
+                }
+                else {
+                    std::cout << "Failed to connect to server." << std::endl;
+                }
             }
             else {
-                std::cout << "Failed to connect to server." << std::endl;
+                Client::get().send("UwU", false);
             }
+            
 
             okDst.x -= 2;
             okDst.y -= 2;
@@ -55,7 +61,7 @@ void ConnectState::update() {
         std::cout << "Received " << packet.second << " from " << packet.first->address.host << "." << std::endl;
     }
 }
-    
+
 void ConnectState::render() {
     Renderer& rndrr = Renderer::get();
 
