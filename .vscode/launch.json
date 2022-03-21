@@ -2,8 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            /* Build and Debug client.exe */
-            "name": "Client",
+            "name": "Client ✨",
             "type": "cppdbg",
             "request": "launch",
             "cwd": "C:\\Users\\ludvi\\Programming\\MvL",
@@ -26,8 +25,7 @@
             ]
         },
         {
-            /* Build and Debug server.exe */
-            "name": "Server",
+            "name": "Server 🥂",
             "type": "cppdbg",
             "request": "launch",
             "cwd": "C:\\Users\\ludvi\\Programming\\MvL",

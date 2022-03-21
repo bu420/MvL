@@ -36,7 +36,7 @@ std::vector<std::pair<ENetPeer*, std::string>> Server::update() {
             }
             else {
                 enet_peer_reset(event.peer);
-                std::cout << "3rd client tried to connect, disconnected." << std::endl;
+                std::cout << "3rd client tried to connect, disconnected it." << std::endl;
             }
             
             break;

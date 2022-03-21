@@ -6,7 +6,6 @@
 			"label": "Build Client ✨",
 			"command": "C:\\Users\\ludvi\\Programming\\MvL\\compile_client.bat",
 			"group": "build",
-			"detail": "compiler: C:\\msys64\\mingw64\\bin\\g++.exe",
 			"presentation": {
 				"reveal": "silent",
 				"close": true,
@@ -18,12 +17,32 @@
 			"label": "Build Server 🥂",
 			"command": "C:\\Users\\ludvi\\Programming\\MvL\\compile_server.bat",
 			"group": "build",
-			"detail": "compiler: C:\\msys64\\mingw64\\bin\\g++.exe",
 			"presentation": {
 				"reveal": "silent",
 				"close": true,
 				"clear": true
 			}
+		},
+		/* Creative line break. 💖 */
+		{
+			"type": "shell",
+			"label": "---------------",
+			"command": "",
+			"presentation": {
+				"reveal": "silent",
+				"close": true,
+				"clear": true
+			}
+		},
+		{
+			"type": "shell",
+			"label": "Run Client ✨",
+			"command": "C:\\Users\\ludvi\\Programming\\MvL\\client.exe"
+		},
+		{
+			"type": "shell",
+			"label": "Run Server 🥂",
+			"command": "C:\\Users\\ludvi\\Programming\\MvL\\server.exe"
 		}
 	]
 }

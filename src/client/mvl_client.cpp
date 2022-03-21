@@ -46,17 +46,19 @@ bool Client::connected() {
 std::vector<std::pair<ENetPeer*, std::string>> Client::update() {
     std::vector<std::pair<ENetPeer*, std::string>> packets;
 
-    ENetEvent event;
-    while (enet_host_service(client, &event, 0) > 0) {
-        switch (event.type) {
-        case ENET_EVENT_TYPE_DISCONNECT:
-            std::cout << "Disconnected." << std::endl;
-            client = nullptr;
-            break;
+    if (connected()) {
+        ENetEvent event;
+        while (enet_host_service(client, &event, 0) > 0) {
+            switch (event.type) {
+            case ENET_EVENT_TYPE_DISCONNECT:
+                std::cout << "Disconnected." << std::endl;
+                break;
 
-        case ENET_EVENT_TYPE_RECEIVE:
-            packets.push_back(std::make_pair(event.peer, (char*)event.packet->data));
-            enet_packet_destroy(event.packet);
+            case ENET_EVENT_TYPE_RECEIVE:
+                std::cout << "Received." << std::endl;
+                packets.push_back(std::make_pair(event.peer, (char*)event.packet->data));
+                enet_packet_destroy(event.packet);
+            }
         }
     }
 
@@ -70,5 +72,4 @@ void Client::send(std::string message, bool reliable) {
 
     ENetPacket* packet = enet_packet_create(message.c_str(), message.size() + 1, reliable ? ENET_PACKET_FLAG_RELIABLE : ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT);
     enet_peer_send(server, 0, packet);
-    enet_packet_destroy(packet);
 }
