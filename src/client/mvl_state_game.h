@@ -15,6 +15,7 @@ namespace mvl {
 
     private:
         std::vector<Vec2i> tiles;
-        SDL_FRect mario;
+
+        Vec2f player, other;
     };
 }

@@ -4,6 +4,7 @@
 #include <iostream>
 
 using namespace mvl;
+using namespace nlohmann;
 
 void Server::start(int port) {
     mario = nullptr;
@@ -17,8 +18,8 @@ void Server::start(int port) {
     }
 }
 
-std::vector<std::pair<ENetPeer*, std::string>> Server::update() {
-    std::vector<std::pair<ENetPeer*, std::string>> packets;
+std::vector<std::pair<ENetPeer*, nlohmann::json>> Server::update(std::optional<std::function<void()>> marioConnectCallback, std::optional<std::function<void()>> luigiConnectCallback, std::optional<std::function<void()>> marioDisconnectCallback, std::optional<std::function<void()>> luigiDisconnectCallback) {
+    std::vector<std::pair<ENetPeer*, nlohmann::json>> packets;
 
     ENetEvent event;
     while (enet_host_service(server, &event, 0) > 0) {
@@ -26,38 +27,45 @@ std::vector<std::pair<ENetPeer*, std::string>> Server::update() {
         case ENET_EVENT_TYPE_CONNECT:
             if (!mario) {
                 mario = event.peer;
-                std::cout << "Mario connected." << std::endl;
+                if (marioConnectCallback) {
+                    marioConnectCallback.value()();
+                }
             }
             else if (!luigi) {
                 luigi = event.peer;
-                std::cout << "Luigi connected." << std::endl;
+                if (luigiConnectCallback) {
+                    luigiConnectCallback.value()();
+                }
             }
             else {
                 enet_peer_reset(event.peer);
-                std::cout << "3rd client tried to connect, disconnected it." << std::endl;
             }
             
             break;
 
         case ENET_EVENT_TYPE_DISCONNECT:
             if (mario) {
-                if (event.peer->address.host == mario->address.host && event.peer->address.port == mario->address.port) {
-                    std::cout << "Mario disconnected." << std::endl;
+                if (isMario(event.peer)) {
                     mario = nullptr;
+                    if (marioDisconnectCallback) {
+                        marioDisconnectCallback.value()();
+                    }
                 }
             }
             
             if (luigi) {
-                if (event.peer->address.host == luigi->address.host && event.peer->address.port == luigi->address.port) {
-                    std::cout << "Luigi disconnected." << std::endl;
+                if (isLuigi(event.peer)) {
                     luigi = nullptr;
+                    if (luigiDisconnectCallback) {
+                        luigiDisconnectCallback.value()();
+                    }
                 }
             }
 
             break;
 
         case ENET_EVENT_TYPE_RECEIVE:
-            packets.push_back(std::make_pair(event.peer, (char*)event.packet->data));
+            packets.push_back(std::make_pair(event.peer, json::parse(event.packet->data)));
             enet_packet_destroy(event.packet);
         }
     }
@@ -65,19 +73,30 @@ std::vector<std::pair<ENetPeer*, std::string>> Server::update() {
     return packets;
 }
 
-void Server::marioSend(std::string message, bool reliable) {
-    ENetPacket* packet = enet_packet_create(message.c_str(), message.size() + 1, reliable ? ENET_PACKET_FLAG_RELIABLE : ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT);
-    enet_peer_send(mario, 0, packet);
+void send(ENetPeer* peer, json data, bool reliable) {
+    ENetPacket* packet = enet_packet_create(data.dump().c_str(), data.dump().size() + 1, reliable ? ENET_PACKET_FLAG_RELIABLE : ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT);
+    enet_peer_send(peer, 0, packet);
 }
 
-void Server::luigiSend(std::string message, bool reliable) {
-    ENetPacket* packet = enet_packet_create(message.c_str(), message.size() + 1, reliable ? ENET_PACKET_FLAG_RELIABLE : ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT);
-    enet_peer_send(luigi, 0, packet);
+void Server::marioSend(json data, bool reliable) {
+    send(mario, data, reliable);
 }
 
-void Server::broadcast(std::string message, bool reliable) {
-    ENetPacket* packet = enet_packet_create(message.c_str(), message.size() + 1, reliable ? ENET_PACKET_FLAG_RELIABLE : ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT);
+void Server::luigiSend(json data, bool reliable) {
+    send(luigi, data, reliable);
+}
+
+void Server::broadcast(json data, bool reliable) {
+    ENetPacket* packet = enet_packet_create(data.dump().c_str(), data.dump().size() + 1, reliable ? ENET_PACKET_FLAG_RELIABLE : ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT);
     enet_host_broadcast(server, 0, packet);
+}
+
+bool Server::isMario(ENetPeer* peer) {
+    return peer->address.host == mario->address.host && peer->address.port == mario->address.port;
+}
+
+bool Server::isLuigi(ENetPeer* peer) {
+    return peer->address.host == luigi->address.host && peer->address.port == luigi->address.port;
 }
 
 std::string Server::convertHost(enet_uint32 host) {

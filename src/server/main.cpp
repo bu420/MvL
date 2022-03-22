@@ -8,6 +8,7 @@
 #include "mvl_server.h"
 
 using namespace mvl;
+using namespace nlohmann;
 
 int main(int argc, char** argv) {
     try {
@@ -20,11 +21,90 @@ int main(int argc, char** argv) {
         server.start(2000);
         std::cout << "Server started on port 2000." << std::endl;
 
+        // TODO: classes for each state instead.
+        bool stateConnect = true;
+        bool stateSettings = false;
+        bool stateSelect = false;
+        bool stateGame = false;
+
         while (true) {
-            auto packets = server.update();
+            auto packets = server.update(
+                // Mario joined.
+                [&]() -> void {
+                    std::cout << "Mario joined." << std::endl;
+                    server.marioSend({{"type", "mario"}}, true);
+                },
+                
+                // Luigi joined.
+                [&]() -> void {
+                    std::cout << "Luigi joined." << std::endl;
+                    server.luigiSend({{"type", "luigi"}}, true);
+                    server.broadcast({{"type", "ready"}}, true);
+                    stateConnect = false;
+                    stateSettings = true;
+                },
+                
+                // Mario left.
+                [&]() -> void {
+                    std::cout << "Mario left." << std::endl;
+                },
+                
+                // Luigi left.
+                [&]() -> void {
+                    std::cout << "Luigi left." << std::endl;
+                }
+            );
 
             for (auto packet : packets) {
-                std::cout << "Received '" << packet.second << "' from " << server.convertHost(packet.first->address.host) << ":" << packet.first->address.port << "." << std::endl;
+                json data = packet.second;
+
+                if (stateConnect) {}
+                else if (stateSettings) {
+                    if (server.isMario(packet.first)) {
+                        
+                        if (data["type"] == "up") {
+                            server.luigiSend({{"type", "up"}}, true);
+                        }
+                        else if (data["type"] == "down") {
+                            server.luigiSend({{"type", "down"}}, true);
+                        }
+                        else if (data["type"] == "ok") {
+                            server.broadcast({{"type", "ready"}}, true);
+                            stateSettings = false;
+                            stateSelect = true;
+                        }
+                    }
+                }
+                else if (stateSelect) {
+                    if (server.isMario(packet.first)) {
+                        if (data["type"] == "left") {
+                            server.luigiSend({{"type", "left"}}, true);
+                        }
+                        else if (data["type"] == "right") {
+                            server.luigiSend({{"type", "right"}}, true);
+                        }
+                        else if (data["type"] == "back") {
+                            server.broadcast({{"type", "back"}}, true);
+                            stateSelect = false;
+                            stateSettings = true;
+                        }
+                        else if (data["type"] == "select") {
+                            server.broadcast({{"type", "ready"}}, true);
+                            stateSelect = false;
+                            stateGame = true;
+                        }
+                    }
+                }
+                else if (stateGame) {
+                    if (data["type"] == "pos") {
+                        if (server.isMario(packet.first)) {
+                            server.luigiSend({{"type", "pos"}, {"x", data["x"]}, {"y", data["y"]}}, false);
+                        }
+                        else if (server.isLuigi(packet.first)) {
+                            server.marioSend({{"type", "pos"}, {"x", data["x"]}, {"y", data["y"]}}, false);
+                        }
+                    }
+                }
             }
         }
     }

@@ -9,8 +9,11 @@
 #include "mvl_time.h"
 #include "mvl_renderer.h"
 #include "mvl_asset.h"
+#include "mvl_client.h"
+#include "mvl_global_state.h"
 
 using namespace mvl;
+using namespace nlohmann;
 
 void SelectState::init() {
     icons[0] = {{0, 0, 48, 48}, {32, 56, 48, 48}};
@@ -23,29 +26,54 @@ void SelectState::init() {
 }
 
 void SelectState::update() {
-    if (Input::get().keyPressed(SDL_SCANCODE_RIGHT)) {
-        selected = selected == 4 ? 0 : selected + 1;
-    }
-    if (Input::get().keyPressed(SDL_SCANCODE_LEFT)) {
-        selected = selected == 0 ? 4 : selected - 1;
-    }
+    auto packets = Client::get().update();
 
-    for (auto icon : icons) {
-        Buttons::get().reg(icon.second, Renderer::get().bottom, [this]() -> void {
+    for (auto packet : packets) {
+        json data = packet.second;
+
+        if (data["type"] == "ready") {
             StateHandler::get().pop();
             StateHandler::get().push(new GameState);
-        });
+        }
+        else if (data["type"] == "back") {
+            StateHandler::get().pop();
+        }
+        else if (data["type"] == "left") {
+            selected = selected == 0 ? 4 : selected - 1;
+        }
+        else if (data["type"] == "right") {
+            selected = selected == 4 ? 0 : selected + 1;
+        }
     }
 
-    Buttons::get().reg(backArrowDst, Renderer::get().bottom, [this]() -> void {
-        backArrowDst.x += 2;
-        backArrowDst.y += 2;
+    if (GlobalState::get().role.value() == GlobalState::Role::Mario) {
+        if (Input::get().keyPressed(SDL_SCANCODE_LEFT)) {
+            selected = selected == 0 ? 4 : selected - 1;
+            Client::get().send({{"type", "left"}}, true);
+        }
+        if (Input::get().keyPressed(SDL_SCANCODE_RIGHT)) {
+            selected = selected == 4 ? 0 : selected + 1;
+            Client::get().send({{"type", "right"}}, true);
+        }
 
-        Clock::get().setInterval(250, [this]() -> bool {
-            StateHandler::get().pop();
-            return false;
+        for (auto icon : icons) {
+            Buttons::get().reg(icon.second, Renderer::get().bottom, [this]() -> void {
+                Client::get().send({{"type", "select"}}, true);
+            });
+        }
+
+        Buttons::get().reg(backArrowDst, Renderer::get().bottom, [this]() -> void {
+            backArrowDst.x += 2;
+            backArrowDst.y += 2;
+
+            Clock::get().setInterval(250, [this]() -> bool {
+                backArrowDst.x -= 2;
+                backArrowDst.y -= 2;
+                Client::get().send({{"type", "back"}}, true);
+                return false;
+            });
         });
-    });
+    }
 }
 
 void SelectState::render() {

@@ -9,9 +9,12 @@
 namespace mvl {
     class Window : public Singleton<Window> {
     public:
-        void init(std::string title);
+        void init(std::string title, bool hidden);
         void update();
         void setIcon(SDL_Surface* icon);
+        void hide();
+        void show();
+        void setTitle(std::string title);
 
         SDL_Window* window;
         Vec2i size;

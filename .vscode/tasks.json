@@ -6,10 +6,12 @@
 			"label": "Build Client ✨",
 			"command": "C:\\Users\\ludvi\\Programming\\MvL\\compile_client.bat",
 			"group": "build",
+			"problemMatcher": ["$gcc"],
 			"presentation": {
 				"reveal": "silent",
 				"close": true,
-				"clear": true
+				"clear": true,
+				"revealProblems": "onProblem"
 			}
 		},
 		{
@@ -17,10 +19,12 @@
 			"label": "Build Server 🥂",
 			"command": "C:\\Users\\ludvi\\Programming\\MvL\\compile_server.bat",
 			"group": "build",
+			"problemMatcher": ["$gcc"],
 			"presentation": {
 				"reveal": "silent",
 				"close": true,
-				"clear": true
+				"clear": true,
+				"revealProblems": "onProblem"
 			}
 		},
 		/* Creative line break. 💖 */

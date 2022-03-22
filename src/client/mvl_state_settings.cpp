@@ -7,8 +7,11 @@
 #include "mvl_asset.h"
 #include "mvl_window.h"
 #include "mvl_state_select.h"
+#include "mvl_global_state.h"
+#include "mvl_client.h"
 
 using namespace mvl;
+using namespace nlohmann;
 
 void SettingsState::init() {
     selected = 0;
@@ -16,25 +19,44 @@ void SettingsState::init() {
 }
 
 void SettingsState::update() {
-    if (Input::get().keyPressed(SDL_SCANCODE_UP)) {
-        selected = selected == 0 ? 3 : selected - 1;
-    }
-    if (Input::get().keyPressed(SDL_SCANCODE_DOWN)) {
-        selected = selected == 3 ? 0 : selected + 1;
-    }
+    auto packets = Client::get().update();
 
-    Buttons::get().reg(okDst, Renderer::get().bottom, [this]() -> void {
-        okDst.x += 2;
-        okDst.y += 2;
+    for (auto packet : packets) {
+        json data = packet.second;
 
-        Clock::get().setInterval(250, [this]() -> bool {
-            okDst.x -= 2;
-            okDst.y -= 2;
-
+        if (data["type"] == "ready") {
             StateHandler::get().push(new SelectState);
-            return false;
+        }
+        else if (data["type"] == "up") {
+            selected = selected == 0 ? 3 : selected - 1;
+        }
+        else if (data["type"] == "down") {
+            selected = selected == 3 ? 0 : selected + 1;
+        }
+    }
+
+    if (GlobalState::get().role.value() == GlobalState::Role::Mario) {
+        if (Input::get().keyPressed(SDL_SCANCODE_UP)) {
+            selected = selected == 0 ? 3 : selected - 1;
+            Client::get().send({{"type", "up"}}, true);
+        }
+        if (Input::get().keyPressed(SDL_SCANCODE_DOWN)) {
+            selected = selected == 3 ? 0 : selected + 1;
+            Client::get().send({{"type", "down"}}, true);
+        }
+
+        Buttons::get().reg(okDst, Renderer::get().bottom, [this]() -> void {
+            okDst.x += 2;
+            okDst.y += 2;
+
+            Clock::get().setInterval(250, [this]() -> bool {
+                okDst.x -= 2;
+                okDst.y -= 2;
+                Client::get().send({{"type", "ok"}}, true);
+                return false;
+            });
         });
-    });
+    }
 }
 
 void SettingsState::render() {

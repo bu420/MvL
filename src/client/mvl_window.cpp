@@ -4,9 +4,9 @@
 
 using namespace mvl;
 
-void Window::init(std::string title) {
+void Window::init(std::string title, bool hidden) {
     size = Vec2i{Screen::res.x + 2 * Screen::gap, 2 * Screen::res.y + 3 * Screen::gap};
-    window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, size.x, size.y, SDL_WINDOW_RESIZABLE);
+    window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, size.x, size.y, hidden ? SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIDDEN : SDL_WINDOW_RESIZABLE);
 }
 
 void Window::update() {
@@ -21,4 +21,16 @@ void Window::update() {
 
 void Window::setIcon(SDL_Surface* icon) {
     SDL_SetWindowIcon(window, icon);
+}
+
+void Window::hide() {
+    SDL_HideWindow(window);
+}
+
+void Window::show() {
+    SDL_ShowWindow(window);
+}
+
+void Window::setTitle(std::string title) {
+    SDL_SetWindowTitle(window, title.c_str());
 }

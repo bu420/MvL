@@ -41,19 +41,28 @@ int main(int argc, char** argv) {
             throw std::runtime_error("Failed to init ENet.");
         }
 
-        Window::get().init("MvL");
-        Renderer::get().init();
-        Assets::get().load();
-        Window::get().setIcon(Assets::get().icon);
-        Clock::get().init();
-        Client::get().init();
+        auto& window = Window::get();
+        auto& renderer =  Renderer::get();
+        auto& assets = Assets::get();
+        auto& clock = Clock::get();
+        auto& stateHandler = StateHandler::get();
+        auto& client = Client::get();
+        auto& input = Input::get();
+        auto& buttons = Buttons::get();
 
-        StateHandler::get().push(new ConnectState);
+        window.init("MvL", true);
+        renderer.init();
+        assets.load();
+        window.setIcon(assets.icon);
+        clock.init();
+        client.init();
+
+        stateHandler.push(new ConnectState);
 
         while (true) {
             // Update.
 
-            Clock::get().tick();
+            clock.tick();
 
             auto events = pollEvents();
             for (auto event : events) {
@@ -62,33 +71,33 @@ int main(int argc, char** argv) {
                 }
             }
 
-            Input::get().update(events);
-            Window::get().update();
-            StateHandler::get().update();
+            input.update(events);
+            window.update();
+            stateHandler.update();
             
-            Buttons::get().handle();
+            buttons.handle();
 
             // Render.
 
-            Renderer::get().fill({0, 0, Window::get().size.x, Window::get().size.y}, {0, 0, 0, 255});
+            renderer.fill({0, 0, window.size.x, window.size.y}, {0, 0, 0, 255});
 
-            Screen top = Renderer::get().top;
-            Screen bottom = Renderer::get().bottom;
-            Renderer::get().fill({0, 0, Screen::res.x, Screen::res.y}, {255, 255, 255, 255}, top);
-            Renderer::get().fill({0, 0, Screen::res.x, Screen::res.y}, {255, 255, 255, 255}, bottom);
+            Screen top = renderer.top;
+            Screen bottom = renderer.bottom;
+            renderer.fill({0, 0, Screen::res.x, Screen::res.y}, {255, 255, 255, 255}, top);
+            renderer.fill({0, 0, Screen::res.x, Screen::res.y}, {255, 255, 255, 255}, bottom);
 
-            StateHandler::get().render();
+            stateHandler.render();
 
-            Renderer::get().renderTexture(top.renderTexture, std::nullopt, SDL_Rect{top.pos.x, top.pos.y, top.res.x, top.res.y});
-            Renderer::get().renderTexture(bottom.renderTexture, std::nullopt, SDL_Rect{bottom.pos.x, bottom.pos.y, bottom.res.x, bottom.res.y});
+            renderer.renderTexture(top.renderTexture, std::nullopt, SDL_Rect{top.pos.x, top.pos.y, top.res.x, top.res.y});
+            renderer.renderTexture(bottom.renderTexture, std::nullopt, SDL_Rect{bottom.pos.x, bottom.pos.y, bottom.res.x, bottom.res.y});
 
-            SDL_RenderPresent(Renderer::get().renderer);
+            SDL_RenderPresent(renderer.renderer);
         }
     }
-    catch (std::runtime_error e) {
+    catch (std::runtime_error& e) {
         std::cout << "Runtime error: " << e.what() << std::endl;
     }
-    catch (std::exception e) {
+    catch (std::exception& e) {
         std::cout << "Exception: " << e.what() << std::endl;
     }
 

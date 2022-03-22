@@ -1,8 +1,5 @@
 #pragma once
 
-#include <SDL2/SDL.h>
-#include <string>
-
 #include "mvl_state.h"
 
 namespace mvl {
@@ -13,8 +10,5 @@ namespace mvl {
         void render() override;
 
     private:
-        SDL_Rect okDst;
-        std::string host;
-        int port;
     };
 }

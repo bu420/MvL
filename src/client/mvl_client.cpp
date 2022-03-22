@@ -3,6 +3,7 @@
 #include <iostream>
 
 using namespace mvl;
+using namespace nlohmann;
 
 void Client::init() {
     if (!(client = enet_host_create(nullptr, 1, 2, 0, 0))) {
@@ -23,7 +24,7 @@ bool Client::connect(std::string host, int port) {
     }
 
     ENetEvent event;
-    if (enet_host_service(client, &event, 2000) > 0) {
+    if (enet_host_service(client, &event, 5000) > 0) {
         if (event.type == ENET_EVENT_TYPE_CONNECT) {
             return true;
         }
@@ -43,8 +44,8 @@ bool Client::connected() {
     return client->connectedPeers > 0;
 }
 
-std::vector<std::pair<ENetPeer*, std::string>> Client::update() {
-    std::vector<std::pair<ENetPeer*, std::string>> packets;
+std::vector<std::pair<ENetPeer*, json>> Client::update() {
+    std::vector<std::pair<ENetPeer*, json>> packets;
 
     if (connected()) {
         ENetEvent event;
@@ -55,8 +56,7 @@ std::vector<std::pair<ENetPeer*, std::string>> Client::update() {
                 break;
 
             case ENET_EVENT_TYPE_RECEIVE:
-                std::cout << "Received." << std::endl;
-                packets.push_back(std::make_pair(event.peer, (char*)event.packet->data));
+                packets.push_back(std::make_pair(event.peer, json::parse(event.packet->data)));
                 enet_packet_destroy(event.packet);
             }
         }
@@ -65,11 +65,11 @@ std::vector<std::pair<ENetPeer*, std::string>> Client::update() {
     return packets;
 }
 
-void Client::send(std::string message, bool reliable) {
+void Client::send(json data, bool reliable) {
     if (!connected()) {
         return;
     }
 
-    ENetPacket* packet = enet_packet_create(message.c_str(), message.size() + 1, reliable ? ENET_PACKET_FLAG_RELIABLE : ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT);
+    ENetPacket* packet = enet_packet_create(data.dump().c_str(), data.dump().size() + 1, reliable ? ENET_PACKET_FLAG_RELIABLE : ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT);
     enet_peer_send(server, 0, packet);
 }
