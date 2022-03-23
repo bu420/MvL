@@ -1,4 +1,4 @@
-# Auto detect text files and perform LF normalization
-* text=auto
-
+*.h text
+*.c text
+*.cpp text
 *.c linguist-detectable=false
