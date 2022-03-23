@@ -1,4 +1,5 @@
 *.h text
 *.c text
 *.cpp text
-*.c linguist-detectable=false
+* linguist-vendored
+*.cpp linguist-vendored=false
