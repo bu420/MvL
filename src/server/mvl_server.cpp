@@ -65,7 +65,7 @@ std::vector<std::pair<ENetPeer*, nlohmann::json>> Server::update(std::optional<s
             break;
 
         case ENET_EVENT_TYPE_RECEIVE:
-            packets.push_back(std::make_pair(event.peer, json::parse(event.packet->data)));
+            packets.emplace_back(std::make_pair(event.peer, json::parse(event.packet->data)));
             enet_packet_destroy(event.packet);
         }
     }

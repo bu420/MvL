@@ -39,5 +39,5 @@ int Clock::getDelta() {
 }
 
 void Clock::setInterval(int ms, std::function<bool()> callback) {
-    intervals.push_back(Interval(ms, SDL_GetTicks64(), callback));
+    intervals.emplace_back(Interval(ms, SDL_GetTicks64(), callback));
 }

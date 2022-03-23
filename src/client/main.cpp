@@ -13,7 +13,7 @@ std::vector<SDL_Event> pollEvents() {
 
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
-        events.push_back(event);
+        events.emplace_back(event);
     }
 
     return events;
@@ -39,8 +39,6 @@ int main(int argc, char** argv) {
         Clock clock;
         StateHandler stateHandler;
         Client client;
-        Input input;
-        Buttons buttons;
         GlobalState globalState;
 
         window.init("MvL", true);
@@ -63,12 +61,10 @@ int main(int argc, char** argv) {
                 }
             }
 
-            input.update(events);
+            window.input.update(events);
             window.update();
-            stateHandler.update(window, client, input, buttons, clock, globalState);
-            
-            buttons.handle(input);
-
+            stateHandler.update(window, client, clock);
+            window.handleButtons();
             // Render.
 
             window.fill({0, 0, window.size.x, window.size.y}, {0, 0, 0, 255});
@@ -78,7 +74,7 @@ int main(int argc, char** argv) {
             window.fill({0, 0, Screen::res.x, Screen::res.y}, {255, 255, 255, 255}, top);
             window.fill({0, 0, Screen::res.x, Screen::res.y}, {255, 255, 255, 255}, bottom);
 
-            stateHandler.render(window, assets, globalState);
+            stateHandler.render(window, client, assets);
 
             window.renderTexture(top.renderTexture, std::nullopt, SDL_Rect{top.pos.x, top.pos.y, top.res.x, top.res.y});
             window.renderTexture(bottom.renderTexture, std::nullopt, SDL_Rect{bottom.pos.x, bottom.pos.y, bottom.res.x, bottom.res.y});

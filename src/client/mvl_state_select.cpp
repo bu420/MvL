@@ -17,7 +17,7 @@ void SelectState::init(Client& client) {
     backArrowDst = {224, 160, 30, 30};
 }
 
-void SelectState::update(Window& window, Client& client, Input& input, Buttons& buttons, Clock& clock, StateHandler& stateHandler, GlobalState& globalState) {
+void SelectState::update(Window& window, Client& client, Clock& clock, StateHandler& stateHandler) {
     auto packets = client.update();
 
     for (auto packet : packets) {
@@ -38,23 +38,23 @@ void SelectState::update(Window& window, Client& client, Input& input, Buttons& 
         }
     }
 
-    if (globalState.role.value() == GlobalState::Role::Mario) {
-        if (input.keyPressed(SDL_SCANCODE_LEFT)) {
+    if (client.globalState.role.value() == GlobalState::Role::Mario) {
+        if (window.input.keyPressed(SDL_SCANCODE_LEFT)) {
             selected = selected == 0 ? 4 : selected - 1;
             client.send({{"type", "left"}}, true);
         }
-        if (input.keyPressed(SDL_SCANCODE_RIGHT)) {
+        if (window.input.keyPressed(SDL_SCANCODE_RIGHT)) {
             selected = selected == 4 ? 0 : selected + 1;
             client.send({{"type", "right"}}, true);
         }
 
         for (auto icon : icons) {
-            buttons.reg(icon.second, window.bottom, [&]() -> void {
+            window.regButton(icon.second, window.bottom, [&]() -> void {
                 client.send({{"type", "select"}}, true);
             });
         }
 
-        buttons.reg(backArrowDst, window.bottom, [&]() -> void {
+        window.regButton(backArrowDst, window.bottom, [&]() -> void {
             backArrowDst.x += 2;
             backArrowDst.y += 2;
 
@@ -68,7 +68,7 @@ void SelectState::update(Window& window, Client& client, Input& input, Buttons& 
     }
 }
 
-void SelectState::render(Window& window, Assets& assets, GlobalState& globalState) {
+void SelectState::render(Window& window, Client& client, Assets& assets) {
     window.renderMenuBackgrounds(assets);
 
     window.fill({16, 48, 224, 96}, {0, 0, 0, 255}, window.top);

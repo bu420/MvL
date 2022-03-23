@@ -22,7 +22,7 @@ namespace mvl {
         std::pair<bool, bool>& getKey(SDL_Scancode scancode);
         std::pair<bool, bool>& getButton(uint8_t button);
 
-        std::map<SDL_Scancode, std::pair<bool, bool>> keys;
-        std::map<uint8_t, std::pair<bool, bool>> buttons;
+        std::map<SDL_Scancode, std::pair<bool, bool>> keyboard;
+        std::map<uint8_t, std::pair<bool, bool>> mouse;
     };
 }

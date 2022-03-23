@@ -71,3 +71,27 @@ void Window::renderMenuBackgrounds(Assets& assets) {
         }
     }
 }
+
+void Window::regButton(SDL_Rect area, std::optional<Screen> screen, std::function<void()> callback) {
+    if (screen) {
+        area.x += screen.value().pos.x;
+        area.y += screen.value().pos.y;
+    }
+
+    buttons.emplace_back(std::make_pair(area, callback));
+}
+
+void Window::handleButtons() {
+    if (input.buttonClicked(SDL_BUTTON_LEFT)) {
+        Vec2i pos = input.mousePos();
+        SDL_Point point = {pos.x, pos.y};
+
+        for (auto button : buttons) {
+            if (SDL_PointInRect(&point, &button.first)) {
+                button.second();
+            }
+        }
+    }
+
+    buttons.clear();
+}

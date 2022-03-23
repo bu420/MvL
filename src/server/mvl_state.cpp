@@ -3,7 +3,7 @@
 using namespace mvl;
 
 void StateHandler::push(State* state) {
-    stack.push_back(state);
+    stack.emplace_back(state);
     stack.back()->init();
 }
 

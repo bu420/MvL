@@ -3,7 +3,7 @@
 using namespace mvl;
 
 void StateHandler::push(State* state, Client& client) {
-    stack.push_back(state);
+    stack.emplace_back(state);
     stack.back()->init(client);
 }
 
@@ -16,10 +16,10 @@ State* StateHandler::top() {
     return stack.back();
 }
 
-void StateHandler::update(Window& window, Client& client, Input& input, Buttons& buttons, Clock& clock, GlobalState& globalState) {
-    top()->update(window, client, input, buttons, clock, *this, globalState);
+void StateHandler::update(Window& window, Client& client, Clock& clock) {
+    top()->update(window, client, clock, *this);
 }
 
-void StateHandler::render(Window& window, Assets& assets, GlobalState& globalState) {
-    top()->render(window, assets, globalState);
+void StateHandler::render(Window& window, Client& client, Assets& assets) {
+    top()->render(window, client, assets);
 }

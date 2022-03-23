@@ -10,8 +10,8 @@ namespace mvl {
     class SelectState : public State {
     public:
         void init(Client&) override;
-        void update(Window&, Client&, Input&, Buttons&, Clock&, StateHandler&, GlobalState&) override;
-        void render(Window&, Assets&, GlobalState&) override;
+        void update(Window&, Client&, Clock&, StateHandler&) override;
+        void render(Window&, Client&, Assets&) override;
 
     private:
         std::array<std::pair<SDL_Rect, SDL_Rect>, 5> icons;

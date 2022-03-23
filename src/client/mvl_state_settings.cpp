@@ -10,7 +10,7 @@ void SettingsState::init(Client& client) {
     okDst = SDL_Rect{96, 156, 64, 28};
 }
 
-void SettingsState::update(Window& window, Client& client, Input& input, Buttons& buttons, Clock& clock, StateHandler& stateHandler, GlobalState& globalState) {
+void SettingsState::update(Window& window, Client& client, Clock& clock, StateHandler& stateHandler) {
     auto packets = client.update();
 
     for (auto packet : packets) {
@@ -27,17 +27,17 @@ void SettingsState::update(Window& window, Client& client, Input& input, Buttons
         }
     }
 
-    if (globalState.role.value() == GlobalState::Role::Mario) {
-        if (input.keyPressed(SDL_SCANCODE_UP)) {
+    if (client.globalState.role.value() == GlobalState::Role::Mario) {
+        if (window.input.keyPressed(SDL_SCANCODE_UP)) {
             selected = selected == 0 ? 3 : selected - 1;
             client.send({{"type", "up"}}, true);
         }
-        if (input.keyPressed(SDL_SCANCODE_DOWN)) {
+        if (window.input.keyPressed(SDL_SCANCODE_DOWN)) {
             selected = selected == 3 ? 0 : selected + 1;
             client.send({{"type", "down"}}, true);
         }
 
-        buttons.reg(okDst, window.bottom, [&]() -> void {
+        window.regButton(okDst, window.bottom, [&]() -> void {
             okDst.x += 2;
             okDst.y += 2;
 
@@ -51,7 +51,7 @@ void SettingsState::update(Window& window, Client& client, Input& input, Buttons
     }
 }
 
-void SettingsState::render(Window& window, Assets& assets, GlobalState& globalState) {
+void SettingsState::render(Window& window, Client& client, Assets& assets) {
     window.renderMenuBackgrounds(assets);
 
     window.fill({16, 48, 224, 96}, {0, 0, 0, 255}, window.top);

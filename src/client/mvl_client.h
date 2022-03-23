@@ -6,6 +6,8 @@
 #include <vector>
 #include <utility>
 
+#include "mvl_global_state.h"
+
 namespace mvl {
     class Client {
     public:
@@ -14,6 +16,8 @@ namespace mvl {
         bool connected();
         std::vector<std::pair<ENetPeer*, nlohmann::json>> update();
         void send(nlohmann::json data, bool reliable);
+
+        GlobalState globalState;
 
     private:
         ENetAddress serverAddress;

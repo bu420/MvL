@@ -4,9 +4,13 @@
 #include <SDL2/SDL_ttf.h>
 #include <string>
 #include <optional>
+#include <vector>
+#include <utility>
+#include <functional>
 
 #include "mvl_math.h"
 #include "mvl_asset.h"
+#include "mvl_input.h"
 
 namespace mvl {
     struct Screen {
@@ -31,11 +35,18 @@ namespace mvl {
         void fill(SDL_Rect area, SDL_Color color, std::optional<Screen> screen = std::nullopt);
         void renderMenuBackgrounds(Assets& assets);
 
+        void regButton(SDL_Rect area, std::optional<Screen> screen, std::function<void()> callback);
+        void handleButtons();
+
         SDL_Window* window;
         Vec2i size;
 
         SDL_Renderer* renderer;
         Screen top;
         Screen bottom;
+
+        Input input;
+
+        std::vector<std::pair<SDL_Rect, std::function<void()>>> buttons;
     };
 }
