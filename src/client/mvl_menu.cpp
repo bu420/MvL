@@ -1,7 +1,5 @@
 #include "mvl_menu.h"
 
-#include "mvl_input.h"
-
 using namespace mvl;
 
 void Buttons::reg(SDL_Rect area, std::optional<Screen> screen, std::function<void()> callback) {
@@ -13,9 +11,9 @@ void Buttons::reg(SDL_Rect area, std::optional<Screen> screen, std::function<voi
     buttons.push_back(Button(area, callback));
 }
 
-void Buttons::handle() {
-    if (Input::get().buttonClicked(SDL_BUTTON_LEFT)) {
-        Vec2i pos = Input::get().mousePos();
+void Buttons::handle(Input& input) {
+    if (input.buttonClicked(SDL_BUTTON_LEFT)) {
+        Vec2i pos = input.mousePos();
         SDL_Point point = {pos.x, pos.y};
 
         for (auto button : buttons) {

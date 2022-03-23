@@ -4,7 +4,7 @@ namespace mvl {
     template<typename T> struct Vec2 {
         T x, y;
 
-        // TODO: implement operator overloads.
+        // TODO: add operator overloads.
     };
 
     using Vec2i = Vec2<int>;

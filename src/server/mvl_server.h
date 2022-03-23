@@ -8,10 +8,8 @@
 #include <optional>
 #include <functional>
 
-#include "mvl_singleton.h"
-
 namespace mvl {
-    class Server : public Singleton<Server> {
+    class Server {
     public:
         void start(int port);
         std::vector<std::pair<ENetPeer*, nlohmann::json>> update(

@@ -5,10 +5,9 @@
 #include <vector>
 
 #include "mvl_math.h"
-#include "mvl_singleton.h"
 
 namespace mvl {
-    class Input : public Singleton<Input> {
+    class Input {
     public:
         void update(std::vector<SDL_Event> events);
         bool keyHeld(SDL_Scancode scancode);

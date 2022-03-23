@@ -16,8 +16,7 @@ int main(int argc, char** argv) {
             throw std::runtime_error("Failed to init ENet.");
         }
 
-        Server& server = Server::get();
-
+        Server server;
         server.start(2000);
         std::cout << "Server started on port 2000." << std::endl;
 

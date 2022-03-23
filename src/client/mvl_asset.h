@@ -5,10 +5,8 @@
 #include <SDL2/SDL_mixer.h>
 #include <string>
 
-#include "mvl_singleton.h"
-
 namespace mvl {
-    class Assets : public Singleton<Assets> {
+    class Assets {
     public:
         void load();
 

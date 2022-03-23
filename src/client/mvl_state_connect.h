@@ -5,9 +5,9 @@
 namespace mvl {
     class ConnectState : public State {
     public:
-        void init() override;
-        void update() override;
-        void render() override;
+        void init(Client&) override;
+        void update(Window&, Client&, Input&, Buttons&, Clock&, StateHandler&, GlobalState&) override;
+        void render(Window&, Assets&, GlobalState&) override;
 
     private:
     };

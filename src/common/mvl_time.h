@@ -4,12 +4,10 @@
 #include <vector>
 #include <tuple>
 
-#include "mvl_singleton.h"
-
 namespace mvl {
     using Interval = std::tuple<int, int, std::function<bool()>>;
 
-    class Clock : public Singleton<Clock> {
+    class Clock {
     public:
         void init();
         void tick();

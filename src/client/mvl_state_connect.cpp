@@ -3,16 +3,12 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "mvl_window.h"
 #include "mvl_state_settings.h"
-#include "mvl_client.h"
-#include "mvl_global_state.h"
 
 using namespace mvl;
 using namespace nlohmann;
 
-void ConnectState::init() {
-    auto& client = Client::get();
+void ConnectState::init(Client& client) {
     std::string host, portStr;
         
     std::cout << "Host (default: 127.0.0.1)>";
@@ -32,38 +28,38 @@ void ConnectState::init() {
         std::cout << "Failed to connect to server." << std::endl;
         std::cout << "Press Enter to try again." << std::endl;
         std::cin.get();
-        init();
+        init(client);
     }
 }
 
-void ConnectState::update() {
-    auto packets = Client::get().update();
+void ConnectState::update(Window& window, Client& client, Input& input, Buttons& buttons, Clock& clock, StateHandler& stateHandler, GlobalState& globalState) {
+    auto packets = client.update();
 
     for (auto packet : packets) {
         json data = packet.second;
 
         if (data["type"] == "mario") {
-            GlobalState::get().role = GlobalState::Role::Mario;
+            globalState.role = GlobalState::Role::Mario;
             std::cout << "Welcome Mario, waiting for Luigi to join..." << std::endl;
         }
         else if (data["type"] == "luigi") {
-            GlobalState::get().role = GlobalState::Role::Luigi;
+            globalState.role = GlobalState::Role::Luigi;
             std::cout << "Welcome Luigi, waiting for game to start..." << std::endl;
         }
         else if (data["type"] == "ready") {
-            if (!GlobalState::get().role.has_value()) {
+            if (!globalState.role.has_value()) {
                 throw std::runtime_error("Game started before receiving a role.");
             }
 
             std::cout << "Starting!" << std::endl;
-            StateHandler::get().pop();
-            StateHandler::get().push(new SettingsState);
-            Window::get().show();
-            Window::get().setTitle(std::string("MvL: ") + (GlobalState::get().role.value() == GlobalState::Role::Mario ? "Mario" : "Luigi"));
+            stateHandler.pop();
+            stateHandler.push(new SettingsState, client);
+            window.show();
+            window.setTitle(std::string("MvL: ") + (globalState.role.value() == GlobalState::Role::Mario ? "Mario" : "Luigi"));
         }
     }
 }
 
-void ConnectState::render() {
+void ConnectState::render(Window& window, Assets& assets, GlobalState& globalState) {
 
 }

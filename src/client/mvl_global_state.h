@@ -2,10 +2,8 @@
 
 #include <optional>
 
-#include "mvl_singleton.h"
-
 namespace mvl {
-    class GlobalState : public Singleton<GlobalState> {
+    class GlobalState {
     public:
         enum class Role {
             Mario,

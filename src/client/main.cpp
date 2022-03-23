@@ -3,15 +3,8 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "mvl_window.h"
-#include "mvl_renderer.h"
-#include "mvl_asset.h"
-#include "mvl_input.h"
 #include "mvl_state.h"
-#include "mvl_menu.h"
-#include "mvl_time.h"
 #include "mvl_state_connect.h"
-#include "mvl_client.h"
 
 using namespace mvl;
 
@@ -41,23 +34,22 @@ int main(int argc, char** argv) {
             throw std::runtime_error("Failed to init ENet.");
         }
 
-        auto& window = Window::get();
-        auto& renderer =  Renderer::get();
-        auto& assets = Assets::get();
-        auto& clock = Clock::get();
-        auto& stateHandler = StateHandler::get();
-        auto& client = Client::get();
-        auto& input = Input::get();
-        auto& buttons = Buttons::get();
+        Window window;
+        Assets assets;
+        Clock clock;
+        StateHandler stateHandler;
+        Client client;
+        Input input;
+        Buttons buttons;
+        GlobalState globalState;
 
         window.init("MvL", true);
-        renderer.init();
         assets.load();
         window.setIcon(assets.icon);
         clock.init();
         client.init();
 
-        stateHandler.push(new ConnectState);
+        stateHandler.push(new ConnectState, client);
 
         while (true) {
             // Update.
@@ -73,25 +65,25 @@ int main(int argc, char** argv) {
 
             input.update(events);
             window.update();
-            stateHandler.update();
+            stateHandler.update(window, client, input, buttons, clock, globalState);
             
-            buttons.handle();
+            buttons.handle(input);
 
             // Render.
 
-            renderer.fill({0, 0, window.size.x, window.size.y}, {0, 0, 0, 255});
+            window.fill({0, 0, window.size.x, window.size.y}, {0, 0, 0, 255});
 
-            Screen top = renderer.top;
-            Screen bottom = renderer.bottom;
-            renderer.fill({0, 0, Screen::res.x, Screen::res.y}, {255, 255, 255, 255}, top);
-            renderer.fill({0, 0, Screen::res.x, Screen::res.y}, {255, 255, 255, 255}, bottom);
+            Screen top = window.top;
+            Screen bottom = window.bottom;
+            window.fill({0, 0, Screen::res.x, Screen::res.y}, {255, 255, 255, 255}, top);
+            window.fill({0, 0, Screen::res.x, Screen::res.y}, {255, 255, 255, 255}, bottom);
 
-            stateHandler.render();
+            stateHandler.render(window, assets, globalState);
 
-            renderer.renderTexture(top.renderTexture, std::nullopt, SDL_Rect{top.pos.x, top.pos.y, top.res.x, top.res.y});
-            renderer.renderTexture(bottom.renderTexture, std::nullopt, SDL_Rect{bottom.pos.x, bottom.pos.y, bottom.res.x, bottom.res.y});
+            window.renderTexture(top.renderTexture, std::nullopt, SDL_Rect{top.pos.x, top.pos.y, top.res.x, top.res.y});
+            window.renderTexture(bottom.renderTexture, std::nullopt, SDL_Rect{bottom.pos.x, bottom.pos.y, bottom.res.x, bottom.res.y});
 
-            SDL_RenderPresent(renderer.renderer);
+            SDL_RenderPresent(window.renderer);
         }
     }
     catch (std::runtime_error& e) {

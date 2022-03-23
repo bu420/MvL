@@ -6,10 +6,8 @@
 #include <vector>
 #include <utility>
 
-#include "mvl_singleton.h"
-
 namespace mvl {
-    class Client : public Singleton<Client> {
+    class Client {
     public:
         void init();
         bool connect(std::string host, int port);
