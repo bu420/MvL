@@ -52,7 +52,9 @@ std::vector<std::pair<ENetPeer*, json>> Client::update(std::optional<std::functi
         while (enet_host_service(client, &event, 0) > 0) {
             switch (event.type) {
             case ENET_EVENT_TYPE_DISCONNECT:
-                std::cout << "Disconnected." << std::endl;
+                if (disconnectCallback) {
+                    disconnectCallback.value()();
+                }
                 break;
 
             case ENET_EVENT_TYPE_RECEIVE:
