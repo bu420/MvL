@@ -40,13 +40,18 @@
 		},
 		{
 			"type": "shell",
-			"label": "Run Client ✨",
-			"command": "C:\\Users\\ludvi\\Programming\\MvL\\client.exe"
+			"label": "Run Client #1 ✨",
+			"command": "C:\\Users\\ludvi\\Programming\\MvL\\bin\\client.exe"
+		},
+		{
+			"type": "shell",
+			"label": "Run Client #2 ✨",
+			"command": "C:\\Users\\ludvi\\Programming\\MvL\\bin\\client.exe"
 		},
 		{
 			"type": "shell",
 			"label": "Run Server 🥂",
-			"command": "C:\\Users\\ludvi\\Programming\\MvL\\server.exe"
+			"command": "C:\\Users\\ludvi\\Programming\\MvL\\bin\\server.exe"
 		}
 	]
 }

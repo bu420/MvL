@@ -38,7 +38,7 @@ void SelectState::update(Window& window, Client& client, Clock& clock, StateHand
         }
     }
 
-    if (client.globalState.role.value() == GlobalState::Role::Mario) {
+    if (client.role.value() == Client::Role::Mario) {
         if (window.input.keyPressed(SDL_SCANCODE_LEFT)) {
             selected = selected == 0 ? 4 : selected - 1;
             client.send({{"type", "left"}}, true);

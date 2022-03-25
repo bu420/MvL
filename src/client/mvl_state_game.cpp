@@ -11,6 +11,24 @@ void GameState::init(Client& client) {
     }
 
     player = other = {64, 16};
+    vel = {0, 0};
+    gravity = 3 / 13.f;
+}
+
+void GameState::handleCollision(bool trueForVerticalAndFalseForHorizontal) {
+    for (auto tile : tiles) {
+        SDL_Rect r0 = {(int)player.x, (int)player.y, 16, 16};
+        SDL_Rect r1 = {tile.x, tile.y, 16, 16};
+
+        if (SDL_HasIntersection(&r0, &r1)) {
+            if (trueForVerticalAndFalseForHorizontal && vel.y != 0) {
+                player.y = vel.y > 0 ? tile.y - 16 : tile.y + 16;
+            }
+            else if (!trueForVerticalAndFalseForHorizontal && vel.x != 0) {
+                player.x = vel.x > 0 ? tile.x - 16 : tile.x + 16;
+            }
+        }
+    }
 }
 
 void GameState::update(Window& window, Client& client, Clock& clock, StateHandler& stateHandler) {
@@ -18,18 +36,38 @@ void GameState::update(Window& window, Client& client, Clock& clock, StateHandle
 
     Vec2f before = {player.x, player.y};
 
-    if (window.input.keyHeld(SDL_SCANCODE_LEFT)) {
-        player.x -= speed;
+    bool up = window.input.keyHeld(SDL_SCANCODE_UP);
+    bool down = window.input.keyHeld(SDL_SCANCODE_DOWN);
+    bool left = window.input.keyHeld(SDL_SCANCODE_LEFT);
+    bool right = window.input.keyHeld(SDL_SCANCODE_RIGHT);
+
+    if (up) {
+        vel.y = -speed;
     }
-    if (window.input.keyHeld(SDL_SCANCODE_RIGHT)) {
-        player.x += speed;
+    if (down) {
+        vel.y = speed;
     }
-    if (window.input.keyHeld(SDL_SCANCODE_UP)) {
-        player.y -= speed;
+    if (!up && !down) {
+        vel.y = 0;
     }
-    if (window.input.keyHeld(SDL_SCANCODE_DOWN)) {
-        player.y += speed;
+
+    player.y += vel.y;
+
+    handleCollision(true);
+
+    if (left) {
+        vel.x = -speed;
     }
+    if (right) {
+        vel.x = speed;
+    }
+    if (!left && !right) {
+        vel.x = 0;
+    }
+
+    player.x += vel.x;
+
+    handleCollision(false);
 
     if (player.x != before.x || player.y != before.x) {
         client.send({{"type", "pos"}, {"x", player.x}, {"y", player.y}}, false);
@@ -54,7 +92,7 @@ void GameState::render(Window& window, Client& client, Assets& assets) {
         window.renderSurface(assets.blueBricks, std::nullopt, SDL_Rect{tile.x + camera.x, tile.y + camera.y, 16, 16}, window.top);
     }
 
-    bool which = client.globalState.role.value() == GlobalState::Role::Mario;
+    bool which = client.role.value() == Client::Role::Mario;
     SDL_Color red = {255, 0, 0, 255};
     SDL_Color green = {0, 255, 0, 255};
 

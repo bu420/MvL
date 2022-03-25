@@ -39,7 +39,6 @@ int main(int argc, char** argv) {
         Clock clock;
         StateHandler stateHandler;
         Client client;
-        GlobalState globalState;
 
         window.init("MvL", true);
         assets.load();

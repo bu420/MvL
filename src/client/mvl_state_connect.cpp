@@ -39,15 +39,15 @@ void ConnectState::update(Window& window, Client& client, Clock& clock, StateHan
         json data = packet.second;
 
         if (data["type"] == "mario") {
-            client.globalState.role = GlobalState::Role::Mario;
+            client.role = Client::Role::Mario;
             std::cout << "Welcome Mario, waiting for Luigi to join..." << std::endl;
         }
         else if (data["type"] == "luigi") {
-            client.globalState.role = GlobalState::Role::Luigi;
+            client.role = Client::Role::Luigi;
             std::cout << "Welcome Luigi, waiting for game to start..." << std::endl;
         }
         else if (data["type"] == "ready") {
-            if (!client.globalState.role.has_value()) {
+            if (!client.role.has_value()) {
                 throw std::runtime_error("Game started before receiving a role.");
             }
 
@@ -55,7 +55,7 @@ void ConnectState::update(Window& window, Client& client, Clock& clock, StateHan
             stateHandler.pop();
             stateHandler.push(new SettingsState, client);
             window.show();
-            window.setTitle(std::string("MvL: ") + (client.globalState.role.value() == GlobalState::Role::Mario ? "Mario" : "Luigi"));
+            window.setTitle(std::string("MvL: ") + (client.role.value() == Client::Role::Mario ? "Mario" : "Luigi"));
         }
     }
 }

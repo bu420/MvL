@@ -44,7 +44,7 @@ bool Client::connected() {
     return client->connectedPeers > 0;
 }
 
-std::vector<std::pair<ENetPeer*, json>> Client::update() {
+std::vector<std::pair<ENetPeer*, json>> Client::update(std::optional<std::function<void()>> disconnectCallback) {
     std::vector<std::pair<ENetPeer*, json>> packets;
 
     if (connected()) {

@@ -14,8 +14,12 @@ namespace mvl {
         void render(Window&, Client&, Assets&) override;
 
     private:
+        void handleCollision(bool trueForVerticalAndFalseForHorizontal);
+
         std::vector<Vec2i> tiles;
 
         Vec2f player, other;
+        Vec2f vel;
+        float gravity;
     };
 }

@@ -27,7 +27,7 @@ void SettingsState::update(Window& window, Client& client, Clock& clock, StateHa
         }
     }
 
-    if (client.globalState.role.value() == GlobalState::Role::Mario) {
+    if (client.role.value() == Client::Role::Mario) {
         if (window.input.keyPressed(SDL_SCANCODE_UP)) {
             selected = selected == 0 ? 3 : selected - 1;
             client.send({{"type", "up"}}, true);
