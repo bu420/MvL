@@ -7,7 +7,7 @@
 namespace mvl {
     class SettingsState : public State {
     public:
-        void init(Client&) override;
+        void init(Window&, Client&) override;
         void update(Window&, Client&, Clock&, StateHandler&) override;
         void render(Window&, Client&, Assets&) override;
 

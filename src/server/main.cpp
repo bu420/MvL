@@ -27,6 +27,8 @@ int main(int argc, char** argv) {
         bool stateGame = false;
 
         while (true) {
+            bool restart = false;
+
             auto packets = server.update(
                 // Mario joined.
                 [&]() -> void {
@@ -46,13 +48,22 @@ int main(int argc, char** argv) {
                 // Mario left.
                 [&]() -> void {
                     std::cout << "Mario left." << std::endl;
+                    restart = true;
                 },
                 
                 // Luigi left.
                 [&]() -> void {
                     std::cout << "Luigi left." << std::endl;
+                    restart = true;
                 }
             );
+
+            if (restart) {
+                stateConnect = true;
+                stateSettings = stateSelect = stateGame = false;
+                server.disconnectBoth();
+                std::cout << "Restarted." << std::endl;
+            }
 
             for (auto packet : packets) {
                 json data = packet.second;

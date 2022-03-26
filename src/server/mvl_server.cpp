@@ -99,6 +99,15 @@ bool Server::isLuigi(ENetPeer* peer) {
     return peer->address.host == luigi->address.host && peer->address.port == luigi->address.port;
 }
 
+void Server::disconnectBoth() {
+    if (mario) {
+        enet_peer_disconnect(mario, 0);
+    }
+    if (luigi) {
+        enet_peer_disconnect(luigi, 0);
+    }
+}
+
 std::string Server::convertHost(enet_uint32 host) {
     return std::to_string((uint8_t)host) + "." + std::to_string((uint8_t)(host >> 8)) + "." + std::to_string((uint8_t)(host >> 16)) + "." + std::to_string((uint8_t)(host >> 24));
 }

@@ -3,11 +3,12 @@
 #include <SDL2/SDL.h>
 
 #include "mvl_state_game.h"
+#include "mvl_state_net_error.h"
 
 using namespace mvl;
 using namespace nlohmann;
 
-void SelectState::init(Client& client) {
+void SelectState::init(Window& window, Client& client) {
     icons[0] = {{0, 0, 48, 48}, {32, 56, 48, 48}};
     icons[1] = {{0, 48, 48, 48}, {104, 56, 48, 48}};
     icons[2] = {{0, 96, 48, 48}, {176, 56, 48, 48}};
@@ -18,14 +19,16 @@ void SelectState::init(Client& client) {
 }
 
 void SelectState::update(Window& window, Client& client, Clock& clock, StateHandler& stateHandler) {
-    auto packets = client.update();
+    auto packets = client.update([&]() -> void {
+        stateHandler.push(new NetErrorState, window, client);
+    });
 
     for (auto packet : packets) {
         json data = packet.second;
 
         if (data["type"] == "ready") {
             stateHandler.pop();
-            stateHandler.push(new GameState, client);
+            stateHandler.push(new GameState, window, client);
         }
         else if (data["type"] == "back") {
             stateHandler.pop();

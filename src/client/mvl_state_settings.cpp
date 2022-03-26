@@ -1,23 +1,28 @@
 #include "mvl_state_settings.h"
 
 #include "mvl_state_select.h"
+#include "mvl_state_net_error.h"
 
 using namespace mvl;
 using namespace nlohmann;
 
-void SettingsState::init(Client& client) {
+void SettingsState::init(Window& window, Client& client) {
+    window.show();
+
     selected = 0;
     okDst = SDL_Rect{96, 156, 64, 28};
 }
 
 void SettingsState::update(Window& window, Client& client, Clock& clock, StateHandler& stateHandler) {
-    auto packets = client.update();
+    auto packets = client.update([&]() -> void {
+        stateHandler.push(new NetErrorState, window, client);
+    });
 
     for (auto packet : packets) {
         json data = packet.second;
 
         if (data["type"] == "ready") {
-            stateHandler.push(new SelectState, client);
+            stateHandler.push(new SelectState, window, client);
         }
         else if (data["type"] == "up") {
             selected = selected == 0 ? 3 : selected - 1;

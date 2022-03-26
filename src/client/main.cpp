@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
         clock.init();
         client.init();
 
-        stateHandler.push(new ConnectState, client);
+        stateHandler.push(new ConnectState, window, client);
 
         while (true) {
             // Update.

@@ -13,11 +13,11 @@ namespace mvl {
 
     class StateHandler {
     public:
-        void push(State* state, Client& client);
+        void push(State* state, Window& window, Client& client);
         void pop();
         State* top();
-        void update(Window&, Client&, Clock&);
-        void render(Window&, Client&, Assets&);
+        void update(Window& window, Client& client, Clock& clock);
+        void render(Window& window, Client& client, Assets& assets);
 
     private:
         std::vector<State*> stack;
@@ -25,7 +25,7 @@ namespace mvl {
 
     class State {
     public:
-        virtual void init(Client&) = 0;
+        virtual void init(Window&, Client&) = 0;
         virtual void update(Window&, Client&, Clock&, StateHandler&) = 0;
         virtual void render(Window&, Client&, Assets&) = 0;
     };

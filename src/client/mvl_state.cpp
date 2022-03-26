@@ -2,9 +2,9 @@
 
 using namespace mvl;
 
-void StateHandler::push(State* state, Client& client) {
+void StateHandler::push(State* state, Window& window, Client& client) {
     stack.emplace_back(state);
-    stack.back()->init(client);
+    stack.back()->init(window, client);
 }
 
 void StateHandler::pop() {

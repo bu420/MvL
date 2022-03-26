@@ -4,11 +4,14 @@
 #include <iostream>
 
 #include "mvl_state_settings.h"
+#include "mvl_state_net_error.h"
 
 using namespace mvl;
 using namespace nlohmann;
 
-void ConnectState::init(Client& client) {
+void ConnectState::init(Window& window, Client& client) {
+    window.hide();
+
     std::string host, portStr;
         
     std::cout << "Host (default: 127.0.0.1)>";
@@ -28,12 +31,14 @@ void ConnectState::init(Client& client) {
         std::cout << "Failed to connect to server." << std::endl;
         std::cout << "Press Enter to try again." << std::endl;
         std::cin.get();
-        init(client);
+        init(window, client);
     }
 }
 
 void ConnectState::update(Window& window, Client& client, Clock& clock, StateHandler& stateHandler) {
-    auto packets = client.update();
+    auto packets = client.update([&]() -> void {
+        stateHandler.push(new NetErrorState, window, client);
+    });
 
     for (auto packet : packets) {
         json data = packet.second;
@@ -53,8 +58,7 @@ void ConnectState::update(Window& window, Client& client, Clock& clock, StateHan
 
             std::cout << "Starting!" << std::endl;
             stateHandler.pop();
-            stateHandler.push(new SettingsState, client);
-            window.show();
+            stateHandler.push(new SettingsState, window, client);
             window.setTitle(std::string("MvL: ") + (client.role.value() == Client::Role::Mario ? "Mario" : "Luigi"));
         }
     }

@@ -2,10 +2,12 @@
 
 #include <cmath>
 
+#include "mvl_state_net_error.h"
+
 using namespace mvl;
 using namespace nlohmann;
 
-void GameState::init(Client& client) {
+void GameState::init(Window& window, Client& client) {
     for (int i = 0; i < 10; i++) {
         tiles.emplace_back(Vec2i{32 + i * 16, 32});
     }
@@ -23,9 +25,11 @@ void GameState::handleCollision(bool trueForVerticalAndFalseForHorizontal) {
         if (SDL_HasIntersection(&r0, &r1)) {
             if (trueForVerticalAndFalseForHorizontal && vel.y != 0) {
                 player.y = vel.y > 0 ? tile.y - 16 : tile.y + 16;
+                vel.y = 0;
             }
             else if (!trueForVerticalAndFalseForHorizontal && vel.x != 0) {
                 player.x = vel.x > 0 ? tile.x - 16 : tile.x + 16;
+                vel.x = 0;
             }
         }
     }
@@ -40,6 +44,8 @@ void GameState::update(Window& window, Client& client, Clock& clock, StateHandle
     bool down = window.input.keyHeld(SDL_SCANCODE_DOWN);
     bool left = window.input.keyHeld(SDL_SCANCODE_LEFT);
     bool right = window.input.keyHeld(SDL_SCANCODE_RIGHT);
+
+    vel.y += gravity;
 
     if (up) {
         vel.y = -speed;
@@ -73,7 +79,9 @@ void GameState::update(Window& window, Client& client, Clock& clock, StateHandle
         client.send({{"type", "pos"}, {"x", player.x}, {"y", player.y}}, false);
     }
 
-    auto packets = client.update();
+    auto packets = client.update([&]() -> void {
+        stateHandler.push(new NetErrorState, window, client);
+    });
 
     for (auto packet : packets) {
         json data = packet.second;

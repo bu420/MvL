@@ -25,6 +25,8 @@ namespace mvl {
         bool isMario(ENetPeer* peer);
         bool isLuigi(ENetPeer* peer);
 
+        void disconnectBoth();
+
         std::string convertHost(enet_uint32 host);
 
     private:
