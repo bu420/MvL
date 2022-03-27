@@ -19,7 +19,10 @@ namespace mvl {
         std::vector<Vec2i> tiles;
 
         Vec2f player, other;
+
         Vec2f vel;
         float gravity;
+        bool onGround;
+        float jump;
     };
 }

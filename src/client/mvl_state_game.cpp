@@ -1,5 +1,6 @@
 #include "mvl_state_game.h"
 
+#include <iostream>
 #include <cmath>
 
 #include "mvl_state_net_error.h"
@@ -13,18 +14,32 @@ void GameState::init(Window& window, Client& client) {
     }
 
     player = other = {64, 16};
+
     vel = {0, 0};
     gravity = 3 / 13.f;
+    onGround = true;
+    jump = 200;
 }
 
 void GameState::handleCollision(bool trueForVerticalAndFalseForHorizontal) {
+    if (trueForVerticalAndFalseForHorizontal) {
+        onGround = false;
+    }
+    
     for (auto tile : tiles) {
         SDL_Rect r0 = {(int)player.x, (int)player.y, 16, 16};
         SDL_Rect r1 = {tile.x, tile.y, 16, 16};
 
         if (SDL_HasIntersection(&r0, &r1)) {
             if (trueForVerticalAndFalseForHorizontal && vel.y != 0) {
-                player.y = vel.y > 0 ? tile.y - 16 : tile.y + 16;
+                if (vel.y > 0) {
+                    player.y = tile.y - 16;
+                    onGround = true;
+                }
+                else {
+                    player.y = tile.y + 16;
+                }
+                
                 vel.y = 0;
             }
             else if (!trueForVerticalAndFalseForHorizontal && vel.x != 0) {
@@ -36,8 +51,6 @@ void GameState::handleCollision(bool trueForVerticalAndFalseForHorizontal) {
 }
 
 void GameState::update(Window& window, Client& client, Clock& clock, StateHandler& stateHandler) {
-    float speed = clock.getDelta() * .2f;
-
     Vec2f before = {player.x, player.y};
 
     bool up = window.input.keyHeld(SDL_SCANCODE_UP);
@@ -47,19 +60,19 @@ void GameState::update(Window& window, Client& client, Clock& clock, StateHandle
 
     vel.y += gravity;
 
-    if (up) {
-        vel.y = -speed;
+    if (onGround && up) {
+        vel.y = -jump;
+        std::cout << "h" << std::endl;
     }
     if (down) {
-        vel.y = speed;
-    }
-    if (!up && !down) {
-        vel.y = 0;
+        
     }
 
-    player.y += vel.y;
+    player.y += vel.y * clock.getDelta();
 
     handleCollision(true);
+
+    float speed = 200;
 
     if (left) {
         vel.x = -speed;
@@ -71,7 +84,7 @@ void GameState::update(Window& window, Client& client, Clock& clock, StateHandle
         vel.x = 0;
     }
 
-    player.x += vel.x;
+    player.x += vel.x * clock.getDelta();
 
     handleCollision(false);
 

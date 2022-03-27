@@ -1,4 +1,4 @@
-g++ -g -std=c++20 ^
+g++ -g -O0 -std=c++20 ^
 -Isrc/client -Isrc/common -Iinc -Llib ^
 -o bin/client ^
 src/client/*.cpp src/common/*.cpp ^

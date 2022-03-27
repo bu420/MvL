@@ -11,12 +11,12 @@ namespace mvl {
     public:
         void init();
         void tick();
-        int getDelta();
+        double getDelta();
         void setInterval(int ms, std::function<bool()> callback);
 
     private:
-        int prev;
-        int delta;
+        double prev;
+        double delta;
         std::vector<Interval> intervals;
     };
 }

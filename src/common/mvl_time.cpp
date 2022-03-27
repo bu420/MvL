@@ -9,7 +9,7 @@ void Clock::init() {
 }
 
 void Clock::tick() {
-    int current = SDL_GetTicks64();
+    double current = (double)SDL_GetPerformanceCounter() / SDL_GetPerformanceFrequency();
     delta = current - prev;
     prev = current;
 
@@ -34,7 +34,7 @@ void Clock::tick() {
     }
 }
 
-int Clock::getDelta() {
+double Clock::getDelta() {
     return delta;
 }
 
