@@ -14,8 +14,10 @@ void Window::init(std::string title, bool hidden) {
     bottom.renderTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Screen::res.x, Screen::res.y);
 }
 
-void Window::update() {
+void Window::update(std::vector<SDL_Event> events) {
     SDL_GetWindowSize(window, &size.x, &size.y);
+
+    input.update(events);
 
     top.pos.x = size.x / 2 - Screen::res.x / 2;
     top.pos.y = size.y / 2 - (2 * Screen::res.y + Screen::gap) / 2;

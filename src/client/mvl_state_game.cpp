@@ -1,6 +1,5 @@
 #include "mvl_state_game.h"
 
-#include <iostream>
 #include <cmath>
 
 #include "mvl_state_net_error.h"
@@ -9,11 +8,15 @@ using namespace mvl;
 using namespace nlohmann;
 
 void GameState::init(Window& window, Client& client) {
-    for (int i = 0; i < 10; i++) {
-        tiles.emplace_back(Vec2i{32 + i * 16, 32});
+    for (int i = 0; i < 30; i++) {
+        tiles.emplace_back(Vec2i{i * 16, 32});
     }
 
-    player = other = {64, 16};
+    for (int i = 0; i < 3; i++) {
+        tiles.emplace_back(Vec2i(128 + i * 16, -32));
+    }
+
+    player = other = {30, 16};
 
     vel = {0, 0};
     gravity = 3 / 13.f;
@@ -62,7 +65,6 @@ void GameState::update(Window& window, Client& client, Clock& clock, StateHandle
 
     if (onGround && up) {
         vel.y = -jump;
-        std::cout << "h" << std::endl;
     }
     if (down) {
         

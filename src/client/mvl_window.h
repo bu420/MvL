@@ -23,7 +23,7 @@ namespace mvl {
     class Window {
     public:
         void init(std::string title, bool hidden);
-        void update();
+        void update(std::vector<SDL_Event> events);
         void setIcon(SDL_Surface* icon);
         void hide();
         void show();

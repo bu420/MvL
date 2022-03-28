@@ -60,10 +60,10 @@ int main(int argc, char** argv) {
                 }
             }
 
-            window.input.update(events);
-            window.update();
+            window.update(events);
             stateHandler.update(window, client, clock);
             window.handleButtons();
+            
             // Render.
 
             window.fill({0, 0, window.size.x, window.size.y}, {0, 0, 0, 255});
